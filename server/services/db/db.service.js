@@ -1,0 +1,333 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const pg_1 = __importDefault(require("pg"));
+const quoteString = (val) => (typeof val === 'string') ? "'" + val + "'" : val;
+const db = (() => {
+    const service = {
+        row: {
+            create: (table, row) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `INSERT INTO "${table}" (${Object.keys(row).map((key, index) => index !== Object.keys(row).length - 1 ? key + ', ' : key).join("")}) VALUES (${Object.keys(row).map((key, index) => index !== Object.keys(row).length - 1 ? quoteString(row[key]) + ', ' : quoteString(row[key])).join("")}) RETURNING *;`;
+                try {
+                    yield client.connect();
+                    const result = ((yield client.query(query)).rows[0]);
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Create - Successfully inserted into table ${table}.`,
+                            `SERVER - DBService - Row - Create - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Create - Error attempting to insert row into table ${table}.`,
+                            `SERVER - DBService - Row - Create - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            read: (table, where) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `SELECT * FROM "${table}"${(where && Object.keys(where).length) ?
+                    ` WHERE ` +
+                        Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
+                            key + ` = ` + quoteString(where[key]) + ` AND `
+                            :
+                                key + ` = ` + quoteString(where[key])).join("")
+                    : ``};`;
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Read - Rows successfully selected from table ${table}.`,
+                            `SERVER - DBService - Row - Read - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Read - Error attempting to select from table ${table}.`,
+                            `SERVER - DBService - Row - Read - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            stream: (table, afterID, numrows) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `SELECT * FROM "${table}" WHERE id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`;
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Stream - Rows successfully streamed from table ${table}.`,
+                            `SERVER - DBService - Row - Stream - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Stream - Error attempting to stream from table ${table}.`,
+                            `SERVER - DBService - Row - Stream - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            update: (table, columns, where) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `UPDATE "${table}" SET ${Object.keys(columns).map((key, index) => index !== Object.keys(columns).length - 1 ?
+                    key + ` = ` + quoteString(columns[key]) + `, `
+                    :
+                        key + ` = ` + quoteString(columns[key])).join("")} ${(where && Object.keys(where).length) ?
+                    `WHERE ` +
+                        Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
+                            key + ` = ` + quoteString(where[key]) + ` AND `
+                            :
+                                key + ` = ` + quoteString(where[key])).join("")
+                    : ``};`;
+                if (!(Object.keys(columns).length)) {
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Update - No updates were provided for table ${table}.`,
+                            `SERVER - DBService - Row - Update - Query: ${query}`
+                        ]
+                    };
+                }
+                try {
+                    yield client.connect();
+                    const result = ((yield client.query(query)).rows[0]);
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Update - Row(s) successfully updated in table ${table}.`,
+                            `SERVER - DBService - Row - Update - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Update - Error attempting to update row(s) in table ${table}.`,
+                            `SERVER - DBService - Row - Update - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            delete: (table, where) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `DELETE FROM "${table}"${(where && Object.keys(where).length) ?
+                    ` WHERE ` +
+                        Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
+                            key + ` = ` + quoteString(where[key]) + ` AND `
+                            :
+                                key + ` = ` + quoteString(where[key])).join("")
+                    : ``};`;
+                try {
+                    yield client.connect();
+                    yield client.query(query);
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Delete - Row(s) successfully deleted in table ${table}.`,
+                            `SERVER - DBService - Row - Delete - Query: ${query}`
+                        ]
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Delete - Error attempting to delete row(s) in table ${table}.`,
+                            `SERVER - DBService - Row - Delete - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            query: (query) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Row - Query - Query successfully executed.`,
+                            `SERVER - DBService - Row - Query - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Row - Query - Query did not execute successfully.`,
+                            `SERVER - DBService - Row - Query - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            })
+        },
+        table: {
+            create: (table, columns) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `CREATE TABLE IF NOT EXISTS "${table}" (${Object.keys(columns).map((key, index) => `\n  ${key} ${columns[key]}`) // (index !== Object.keys(columns).length -1 ? ',' : '')}`)
+                }\n);`;
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Table - Create - Table ${table} successfully created.`,
+                            `SERVER - DBService - Table - Create - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Table - Create - Error attempting to create table ${table}.`,
+                            `SERVER - DBService - Table - Create - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            read: (table) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = table ?
+                    `SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '${table}';`
+                    :
+                        `SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE AND table_schema = 'public';`;
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Table - Read - ` + (table ? `${table} read successfully.` : `Tables read successfully`),
+                            `SERVER - DBService - Table - Read - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Table - Read - ` + (table ? `Error attempting to read table ${table}.` : `Error attempting to read tables.`),
+                            `SERVER - DBService - Table - Read - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            update: (table, updates) => __awaiter(void 0, void 0, void 0, function* () {
+                var _a;
+                if (!(Object.keys(updates).length)) {
+                    return {
+                        success: true,
+                        messages: [`SERVER - DBService - Table - Update - Warning attempting to update table ${table}. No updates were provided.`]
+                    };
+                }
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `ALTER TABLE "${table}"${Object.keys(updates.add || {}).map((column, i) => `\n  ADD "${column}" ${updates.add[column]}`)} ${(_a = updates.drop) === null || _a === void 0 ? void 0 : _a.map((column, i) => `\n  ADD DROP COLUMN "${column}"`)} ${Object.keys(updates.redefine || {}).map((column, i) => `\n  ALTER COLUMN "${column}" TYPE ${updates.redefine[column]}`)} ${Object.keys(updates.rename || {}).map((column, i) => `\n  RENAME COLUMN "${column}" TO ${updates.redefine[column]}`)};`;
+                try {
+                    yield client.connect();
+                    const result = (yield client.query(query)).rows;
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Table - Update - Table ${table} successfully updated.`,
+                            `SERVER - DBService - Table - Update - Query: ${query}`
+                        ],
+                        body: result
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Table - Update - Error attempting to update table ${table}.`,
+                            `SERVER - DBService - Table - Update - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            }),
+            delete: (table) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const query = `DROP TABLE "${table}";`;
+                try {
+                    yield client.connect();
+                    const result = yield client.query(query);
+                    yield client.end();
+                    return {
+                        success: true,
+                        messages: [
+                            `SERVER - DBService - Table - Delete - Table ${table} successfully deleted.`,
+                            `SERVER - DBService - Table - Delete - Query: ${query}`
+                        ],
+                    };
+                }
+                catch (error) {
+                    yield client.end();
+                    return {
+                        success: false,
+                        messages: [
+                            `SERVER - DBService - Table - Delete - Error attempting to delete table ${table}.`,
+                            `SERVER - DBService - Table - Delete - Query: ${query}`
+                        ].concat(error.stack)
+                    };
+                }
+            })
+        }
+    };
+    return service;
+})();
+exports.default = db;
