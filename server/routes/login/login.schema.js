@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+const loginSchema = {
     email: {
         type: 'string',
-        required: true
+        attributes: {
+            required: true
+        }
     },
     password: {
         type: 'string',
-        required: true
+        attributes: {
+            required: true
+        }
     }
 };
+exports.default = loginSchema;
