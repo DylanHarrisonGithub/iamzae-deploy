@@ -77,9 +77,15 @@ const db = (() => {
                     };
                 }
             }),
-            stream: (table, afterID, numrows) => __awaiter(void 0, void 0, void 0, function* () {
+            stream: (table, afterID, numrows, where) => __awaiter(void 0, void 0, void 0, function* () {
                 const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-                const query = `SELECT * FROM "${table}" WHERE id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`;
+                const query = `SELECT * FROM "${table}" WHERE id > ${afterID}${(where && Object.keys(where).length) ?
+                    ` AND ` +
+                        Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
+                            key + ` = ` + quoteString(where[key]) + ` AND `
+                            :
+                                key + ` = ` + quoteString(where[key])).join("")
+                    : ``} ORDER BY id ASC LIMIT ${numrows};`;
                 try {
                     yield client.connect();
                     const result = (yield client.query(query)).rows;

@@ -12,29 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const db_service_1 = __importDefault(require("../../services/db/db.service"));
+const file_service_1 = __importDefault(require("../../services/file/file.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    var queryResult;
-    if (request.params.id) {
-        if (request.params.numrows) {
-            queryResult = yield db_service_1.default.row.stream('user', request.params.id, request.params.numrows);
+    const mList = yield file_service_1.default.readDirectory('/public/media');
+    return new Promise(res => res({
+        code: 200,
+        json: {
+            success: mList.success,
+            messages: [
+                mList.success ?
+                    "SERVER - ROUTES - MEDIALIST - Successfully loaded media list!"
+                    :
+                        `Server - Routes - MEDIALIST - Failed to load media list.`,
+                ...mList.messages
+            ],
+            body: mList.body
         }
-        else {
-            queryResult = yield db_service_1.default.row.read('user', { id: request.params.id });
-        }
-    }
-    else {
-        queryResult = yield db_service_1.default.row.read('user');
-    }
-    return new Promise(res => {
-        var _a;
-        return res({
-            code: 200,
-            json: {
-                success: queryResult.success,
-                messages: queryResult.messages,
-                body: (_a = queryResult.body) === null || _a === void 0 ? void 0 : _a.map(({ id, username, avatar, privilege }) => ({ id: id, username: username, avatar: avatar, privilege: privilege }))
-            }
-        });
-    });
+    }));
 });

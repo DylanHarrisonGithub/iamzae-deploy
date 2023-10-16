@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const validation_service_1 = require("../../services/validation/validation.service");
 const registerSchema = {
-    email: {
-        type: validation_service_1.COMMON_REGEXES.EMAIL,
+    username: {
+        type: 'string',
         attributes: {
             required: true,
             strLength: { minLength: 6 }

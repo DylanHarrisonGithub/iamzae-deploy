@@ -113,7 +113,7 @@ const router = (() => {
                     })
                 }));
             }
-            let tokenRes = yield server_1.default.services.authentication.decodeToken(request.token); // should check for success
+            let tokenRes = yield server_1.default.services.authentication.verifyToken(request.token); // should check for success
             if (!(tokenRes.success)) {
                 return new Promise(resolve => resolve({
                     success: false,
@@ -193,7 +193,7 @@ const router = (() => {
                 success: true,
                 messages: [
                     `SERVER - SERVICES - ROUTER - Request successfully routed.`,
-                    ...((_a = body.json) === null || _a === void 0 ? void 0 : _a.messages)
+                    ...(((_a = body.json) === null || _a === void 0 ? void 0 : _a.messages) || [])
                 ],
                 body: body
             });

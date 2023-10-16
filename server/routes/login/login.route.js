@@ -16,15 +16,15 @@ const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const authentication_service_1 = __importDefault(require("../../services/authentication/authentication.service"));
 const crypto_1 = __importDefault(require("crypto"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = request.params;
-    const res = yield db_service_1.default.row.read('user', { email: email });
+    const { username, password } = request.params;
+    const res = yield db_service_1.default.row.read('user', { username: username });
     if (!res.success) {
         return new Promise(resolve => resolve({
             code: 500,
             json: {
                 success: false,
                 messages: [
-                    `SERVER - ROUTES - LOGIN - Server or Database error attempting to login user ${email}.`
+                    `SERVER - ROUTES - LOGIN - Server or Database error attempting to login user ${username}.`
                 ].concat(res.messages)
             }
         }));
@@ -34,7 +34,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             code: 500,
             json: {
                 success: false,
-                messages: [`SERVER - ROUTES - LOGIN - User ${email} not found.`].concat(res.messages)
+                messages: [`SERVER - ROUTES - LOGIN - User ${username} not found.`].concat(res.messages)
             }
         }));
     }
@@ -45,17 +45,17 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             code: 500,
             json: {
                 success: false,
-                messages: [`SERVER - ROUTES - LOGIN - Password did not match for user ${email}.`].concat(res.messages)
+                messages: [`SERVER - ROUTES - LOGIN - Password did not match for user ${username}.`].concat(res.messages)
             }
         }));
     }
-    const token = yield authentication_service_1.default.generateToken({ email: email, privilege: res.body[0].privilege });
+    const token = yield authentication_service_1.default.generateToken({ username: username, privilege: res.body[0].privilege });
     if (!token.success) {
         return new Promise(resolve => resolve({
             code: 500,
             json: {
                 success: false,
-                messages: [`SERVER - ROUTES - LOGIN - Failed to generate token for user ${email}.`].concat(res.messages).concat(token.messages)
+                messages: [`SERVER - ROUTES - LOGIN - Failed to generate token for user ${username}.`].concat(res.messages).concat(token.messages)
             }
         }));
     }
@@ -63,7 +63,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         code: 200,
         json: {
             success: true,
-            messages: [`SERVER - ROUTES - LOGIN - User ${email} successfully logged in.`].concat(res.messages).concat(token.messages),
+            messages: [`SERVER - ROUTES - LOGIN - User ${username} successfully logged in.`].concat(res.messages).concat(token.messages),
             body: { token: token.body }
         }
     }));

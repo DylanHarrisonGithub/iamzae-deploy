@@ -7,7 +7,7 @@ exports.COMMON_REGEXES = {
     NUMERIC: /^[0-9]*$/,
     ALPHA_NUMERIC: /^[a-zA-Z0-9]*$/,
     ALPHA_NUMERIC_SPACES: /^[a-zA-Z0-9 ]*$/,
-    COMMON_WRITING: /^[A-Za-z0-9 \-_.,?!()"'/$&]*$/,
+    COMMON_WRITING: /^[A-Za-z0-9\s\r\n.,!?'"()\-]*$/,
     PASSWORD_STRONGEST: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?])/
 };
 const validation2 = (() => {

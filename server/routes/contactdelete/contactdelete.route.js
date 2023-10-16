@@ -14,27 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    var queryResult;
-    if (request.params.id) {
-        if (request.params.numrows) {
-            queryResult = yield db_service_1.default.row.stream('user', request.params.id, request.params.numrows);
-        }
-        else {
-            queryResult = yield db_service_1.default.row.read('user', { id: request.params.id });
-        }
-    }
-    else {
-        queryResult = yield db_service_1.default.row.read('user');
-    }
-    return new Promise(res => {
-        var _a;
-        return res({
+    const { id } = request.params;
+    const dbRes = yield db_service_1.default.row.delete('contact', { id: id });
+    if (dbRes.success) {
+        return new Promise(res => res({
             code: 200,
             json: {
-                success: queryResult.success,
-                messages: queryResult.messages,
-                body: (_a = queryResult.body) === null || _a === void 0 ? void 0 : _a.map(({ id, username, avatar, privilege }) => ({ id: id, username: username, avatar: avatar, privilege: privilege }))
+                success: true,
+                messages: [
+                    `SERVER - ROUTES - CONTACTDELETE - Contact deleted.`
+                ].concat(dbRes.messages),
+                body: dbRes.body
             }
-        });
-    });
+        }));
+    }
+    else {
+        return new Promise(res => res({
+            code: 500,
+            json: {
+                success: false,
+                messages: [
+                    `SERVER - ROUTES - CONTACTDELETE - Contact could not be deleted.`
+                ].concat(dbRes.messages),
+                body: request.params
+            }
+        }));
+    }
 });

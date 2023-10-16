@@ -3,10 +3,155 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const contactstream_route_1 = __importDefault(require("./contactstream/contactstream.route"));
+const contactstream_schema_1 = __importDefault(require("./contactstream/contactstream.schema"));
+const contactdelete_route_1 = __importDefault(require("./contactdelete/contactdelete.route"));
+const contactdelete_schema_1 = __importDefault(require("./contactdelete/contactdelete.schema"));
+const contactcreate_route_1 = __importDefault(require("./contactcreate/contactcreate.route"));
+const contactcreate_schema_1 = __importDefault(require("./contactcreate/contactcreate.schema"));
+const reviewstream_route_1 = __importDefault(require("./reviewstream/reviewstream.route"));
+const reviewstream_schema_1 = __importDefault(require("./reviewstream/reviewstream.schema"));
+const reviewdelete_route_1 = __importDefault(require("./reviewdelete/reviewdelete.route"));
+const reviewdelete_schema_1 = __importDefault(require("./reviewdelete/reviewdelete.schema"));
+const reviewupdate_route_1 = __importDefault(require("./reviewupdate/reviewupdate.route"));
+const reviewupdate_schema_1 = __importDefault(require("./reviewupdate/reviewupdate.schema"));
+const reviewcreate_route_1 = __importDefault(require("./reviewcreate/reviewcreate.route"));
+const reviewcreate_schema_1 = __importDefault(require("./reviewcreate/reviewcreate.schema"));
+const eventupdate_route_1 = __importDefault(require("./eventupdate/eventupdate.route"));
+const eventupdate_schema_1 = __importDefault(require("./eventupdate/eventupdate.schema"));
+const eventdelete_route_1 = __importDefault(require("./eventdelete/eventdelete.route"));
+const eventdelete_schema_1 = __importDefault(require("./eventdelete/eventdelete.schema"));
+const eventstream_route_1 = __importDefault(require("./eventstream/eventstream.route"));
+const eventstream_schema_1 = __importDefault(require("./eventstream/eventstream.schema"));
+const eventcreate_route_1 = __importDefault(require("./eventcreate/eventcreate.route"));
+const eventcreate_schema_1 = __importDefault(require("./eventcreate/eventcreate.schema"));
+const userupdate_route_1 = __importDefault(require("./userupdate/userupdate.route"));
+const userupdate_schema_1 = __importDefault(require("./userupdate/userupdate.schema"));
+const userlist_route_1 = __importDefault(require("./userlist/userlist.route"));
+const userlist_schema_1 = __importDefault(require("./userlist/userlist.schema"));
+const deletemedia_route_1 = __importDefault(require("./deletemedia/deletemedia.route"));
+const deletemedia_schema_1 = __importDefault(require("./deletemedia/deletemedia.schema"));
+const uploadmedia_route_1 = __importDefault(require("./uploadmedia/uploadmedia.route"));
+const uploadmedia_schema_1 = __importDefault(require("./uploadmedia/uploadmedia.schema"));
+const medialist_route_1 = __importDefault(require("./medialist/medialist.route"));
+const medialist_schema_1 = __importDefault(require("./medialist/medialist.schema"));
 const login_route_1 = __importDefault(require("./login/login.route"));
 const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
+const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    contactstream: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: contactstream_schema_1.default,
+        route: contactstream_route_1.default
+    },
+    contactdelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: contactdelete_schema_1.default,
+        route: contactdelete_route_1.default
+    },
+    contactcreate: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: contactcreate_schema_1.default,
+        route: contactcreate_route_1.default
+    },
+    reviewstream: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: reviewstream_schema_1.default,
+        route: reviewstream_route_1.default
+    },
+    reviewdelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: reviewdelete_schema_1.default,
+        route: reviewdelete_route_1.default
+    },
+    reviewupdate: {
+        method: ['PATCH'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: reviewupdate_schema_1.default,
+        route: reviewupdate_route_1.default
+    },
+    reviewcreate: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: reviewcreate_schema_1.default,
+        route: reviewcreate_route_1.default
+    },
+    eventupdate: {
+        method: ['PATCH'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: eventupdate_schema_1.default,
+        route: eventupdate_route_1.default
+    },
+    eventdelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: eventdelete_schema_1.default,
+        route: eventdelete_route_1.default
+    },
+    eventstream: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: eventstream_schema_1.default,
+        route: eventstream_route_1.default
+    },
+    eventcreate: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: eventcreate_schema_1.default,
+        route: eventcreate_route_1.default
+    },
+    userupdate: {
+        method: ['PATCH'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: userupdate_schema_1.default,
+        route: userupdate_route_1.default
+    },
+    userlist: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: userlist_schema_1.default,
+        route: userlist_route_1.default
+    },
+    deletemedia: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: deletemedia_schema_1.default,
+        route: deletemedia_route_1.default
+    },
+    uploadmedia: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user', 'admin'],
+        schema: uploadmedia_schema_1.default,
+        route: uploadmedia_route_1.default
+    },
+    medialist: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: medialist_schema_1.default,
+        route: medialist_route_1.default
+    },
     login: {
         method: ["POST"],
         contentType: "application/json",
@@ -17,7 +162,7 @@ const routes = {
     register: {
         method: ["POST"],
         contentType: "application/json",
-        privilege: ['guest'],
+        privilege: (config_1.default.ENVIRONMENT === 'DEVELOPMENT') ? ['guest', 'admin'] : ['admin'],
         schema: register_schema_1.default,
         route: register_route_1.default
     },

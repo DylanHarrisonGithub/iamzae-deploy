@@ -13,32 +13,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
-const authentication_service_1 = __importDefault(require("../../services/authentication/authentication.service"));
-const crypto_1 = __importDefault(require("crypto"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = request.params;
-    const salt = crypto_1.default.randomBytes(32).toString('hex');
-    const hash = yield crypto_1.default.pbkdf2Sync(password, salt, 32, 64, 'sha512').toString('hex');
-    const res = yield db_service_1.default.row.create('user', { username: username, privilege: 'user', password: hash, salt: salt, avatar: `https://avatars.dicebear.com/api/male/john.svg?background=%230000ff` });
-    const token = yield authentication_service_1.default.generateToken({ username: username, privelilege: 'user', dummy: "" });
-    if (res.success && token.success) {
-        return new Promise(resolve => resolve({
+    const { afterID, numrows, search, id } = request.params;
+    const dbRes = id ?
+        yield db_service_1.default.row.read('contact', { id: id })
+        :
+            search ?
+                yield db_service_1.default.row.query(`SELECT * FROM "contact" WHERE search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`)
+                :
+                    yield db_service_1.default.row.stream('contact', afterID, numrows);
+    if (dbRes.success) {
+        const contacts = dbRes.body;
+        return new Promise(res => res({
             code: 200,
             json: {
                 success: true,
                 messages: [
-                    `SERVER - ROUTES - REGISTER - New user ${username} registered.`
-                ].concat(res.messages).concat(token.messages),
-                body: { token: token.body }
+                    `SERVER - ROUTES - CONTACTSTREAM - Contacts streamed.`
+                ].concat(dbRes.messages),
+                body: contacts
             }
         }));
     }
     else {
-        return new Promise(resolve => resolve({
+        return new Promise(res => res({
             code: 500,
             json: {
                 success: false,
-                messages: [`SERVER - ROUTES - REGISTER - User ${username} could not be registered.`].concat(res.messages).concat(token.messages)
+                messages: [
+                    `SERVER - ROUTES - CONTACTSTREAM - Contacts could not be streamed.`
+                ].concat(dbRes.messages),
+                body: request.params
             }
         }));
     }

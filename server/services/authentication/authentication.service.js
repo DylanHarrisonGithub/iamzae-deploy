@@ -18,7 +18,8 @@ const authentication = (() => {
                 let decoded = jsonwebtoken_1.default.verify(token, server_1.default.config.SERVER_SECRET);
                 resolve({
                     success: true,
-                    messages: [`Server - Services - Authentication - VerifyToken: Successfully verified token.`]
+                    messages: [`Server - Services - Authentication - VerifyToken: Successfully verified token.`],
+                    body: decoded
                 });
             }
             catch (_a) {
@@ -30,13 +31,12 @@ const authentication = (() => {
         }),
         decodeToken: (token) => new Promise(resolve => {
             try {
-                let decoded = jsonwebtoken_1.default.verify(token, server_1.default.config.SERVER_SECRET);
+                let decoded = jsonwebtoken_1.default.decode(token);
                 resolve({
                     success: true,
                     messages: [`Server - Services - Authentication - DecodeToken: Successfully decoded token.`],
                     body: decoded
                 });
-                return decoded;
             }
             catch (_a) {
                 resolve({

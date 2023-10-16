@@ -12,29 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const db_service_1 = __importDefault(require("../../services/db/db.service"));
+const file_service_1 = __importDefault(require("../../services/file/file.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    var queryResult;
-    if (request.params.id) {
-        if (request.params.numrows) {
-            queryResult = yield db_service_1.default.row.stream('user', request.params.id, request.params.numrows);
-        }
-        else {
-            queryResult = yield db_service_1.default.row.read('user', { id: request.params.id });
-        }
-    }
-    else {
-        queryResult = yield db_service_1.default.row.read('user');
-    }
-    return new Promise(res => {
-        var _a;
-        return res({
-            code: 200,
+    if (!(request.params.filename)) {
+        return new Promise(res => res({
+            code: 400,
             json: {
-                success: queryResult.success,
-                messages: queryResult.messages,
-                body: (_a = queryResult.body) === null || _a === void 0 ? void 0 : _a.map(({ id, username, avatar, privilege }) => ({ id: id, username: username, avatar: avatar, privilege: privilege }))
+                success: false,
+                messages: ["SERVER - ROUTES - DELETEMEDIA - Filename not provided."],
             }
-        });
-    });
+        }));
+    }
+    try {
+        const res = yield file_service_1.default.delete(`public/media/` + request.params.filename);
+        return new Promise(res => res({ code: 200, json: { success: true, messages: [`SERVER - ROUTES - DELETEMEDIA - Media file ${request.params.filename} successfully deleted.`] } }));
+    }
+    catch (err) {
+        return new Promise(res => res({ code: 404, json: { success: false, messages: [
+                    `SERVER - ROUTES - DELETEMEDIA - Media file ${request.params.filename} could not be deleted.`,
+                    err.toString()
+                ] } }));
+    }
 });
