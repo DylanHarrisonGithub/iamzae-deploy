@@ -16,18 +16,18 @@ const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const { afterID, numrows, search, id, event } = request.params;
     const dbRes = id ?
-        yield db_service_1.default.row.read('review', { id: id })
+        yield db_service_1.default.row.read('review', { id: id, approved: 'true' })
         :
             search ?
                 event ?
-                    yield db_service_1.default.row.query(`SELECT * FROM "review" WHERE event = ${event} AND search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`)
+                    yield db_service_1.default.row.query(`SELECT * FROM "review" WHERE event = ${parseInt(event.toString())} AND approved = 'true' AND search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`)
                     :
-                        yield db_service_1.default.row.query(`SELECT * FROM "review" WHERE search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`) //DB.row.stream<any[]>('event', afterID, numrows)
+                        yield db_service_1.default.row.query(`SELECT * FROM "review" WHERE approved = 'true' AND search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`) //DB.row.stream<any[]>('event', afterID, numrows)
                 :
                     event ?
-                        yield db_service_1.default.row.stream('review', afterID, numrows, { event: event })
+                        yield db_service_1.default.row.stream('review', afterID, numrows, { event: parseInt(event.toString()), approved: 'true' })
                         :
-                            yield db_service_1.default.row.stream('review', afterID, numrows);
+                            yield db_service_1.default.row.stream('review', afterID, numrows, { approved: 'true' });
     if (dbRes.success) {
         const reviews = dbRes.body;
         return new Promise(res => res({
@@ -35,7 +35,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             json: {
                 success: true,
                 messages: [
-                    `SERVER - ROUTES - REVIEWSTREAM - Reviews streamed.`
+                    `SERVER - ROUTES - APPROVEDREVIEWSTREAM - Reviews streamed.`
                 ].concat(dbRes.messages),
                 body: reviews
             }
@@ -47,7 +47,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             json: {
                 success: false,
                 messages: [
-                    `SERVER - ROUTES - REVIEWSTREAM - Reviews could not be streamed.`
+                    `SERVER - ROUTES - APPROVEDREVIEWSTREAM - Reviews could not be streamed.`
                 ].concat(dbRes.messages),
                 body: request.params
             }

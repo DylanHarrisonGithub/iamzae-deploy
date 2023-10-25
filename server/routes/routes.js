@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const approvedreviewstream_route_1 = __importDefault(require("./approvedreviewstream/approvedreviewstream.route"));
+const approvedreviewstream_schema_1 = __importDefault(require("./approvedreviewstream/approvedreviewstream.schema"));
 const contactstream_route_1 = __importDefault(require("./contactstream/contactstream.route"));
 const contactstream_schema_1 = __importDefault(require("./contactstream/contactstream.schema"));
 const contactdelete_route_1 = __importDefault(require("./contactdelete/contactdelete.route"));
@@ -40,6 +42,13 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    approvedreviewstream: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: approvedreviewstream_schema_1.default,
+        route: approvedreviewstream_route_1.default
+    },
     contactstream: {
         method: ['GET'],
         contentType: "application/json",
@@ -64,7 +73,7 @@ const routes = {
     reviewstream: {
         method: ['GET'],
         contentType: "application/json",
-        privilege: ['guest'],
+        privilege: ['user'],
         schema: reviewstream_schema_1.default,
         route: reviewstream_route_1.default
     },

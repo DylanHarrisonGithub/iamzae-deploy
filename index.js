@@ -66,6 +66,7 @@ app.use('/api', (request, response) => __awaiter(void 0, void 0, void 0, functio
 }));
 app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use(express_1.default.static(path_1.default.join(__dirname, 'client')));
+app.get('/*', (req, res) => res.sendFile(path_1.default.resolve(__dirname, './client', 'index.html')));
 app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`CrudStore listening on port ${process.env.PORT || 3000}`);
     // full db delete
