@@ -25,15 +25,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const models_1 = require("../../models/models");
+const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
 const toRegularTime = (militaryTime) => {
     const [hours, minutes] = militaryTime.split(':').map(t => parseInt(t));
     return `${(hours > 12) ? (hours - 12).toString().padStart(2, '0') : hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}${(hours >= 12) ? 'PM' : 'AM'}`;
 };
+function getNthDayInMonth(nth, day, month, year) {
+    // Create new date for 1st of month
+    let d = new Date(year, months.indexOf(month));
+    // Move to first instance of day in month and 
+    // add (n - 1) weeks
+    d.setDate(1 + (7 - d.getDay() + weekdays.indexOf(day)) % 7 + (nth - 1) * 7);
+    return d;
+}
+;
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const _a = request.params, { ['id']: dropped, ['media']: media } = _a, event = __rest(_a, ['id', 'media']);
-    event['media'] = media === null || media === void 0 ? void 0 : media.join(','); // annoying
+    event['media'] = (media === null || media === void 0 ? void 0 : media.join(',')) || ''; // annoying
     event.timestamp = Date.now();
-    const dbRes = yield db_service_1.default.row.create('event', Object.assign(Object.assign({}, event), { search: `${event.month}/${event.day}/${event.year}${event.month}-${event.day}-${event.year}${models_1.timeData.months.indexOf(event.month) + 1}/${event.day}/${event.year}${models_1.timeData.months.indexOf(event.month) + 1}-${event.day}-${event.year}${event.month}/${event.day.toString().padStart(2, '0')}/${event.year}${event.month}-${event.day.toString().padStart(2, '0')}-${event.year}${(models_1.timeData.months.indexOf(event.month) + 1).toString().padStart(2, '0')}/${event.day.toString().padStart(2, '0')}/${event.year}${(models_1.timeData.months.indexOf(event.month) + 1).toString().padStart(2, '0')}-${event.day.toString().padStart(2, '0')}-${event.year}${event.time}${toRegularTime(event.time)}${event.location}${event.description}${event.period}${event.website}` }));
+    let periodicDates = '';
+    if (event.period !== 'Once') {
+        if (event.period === 'Monthly') {
+            let d = new Date(event.year, months.indexOf(event.month));
+            const dayNum = (new Date(event.year, months.indexOf(event.month), event.day)).getDay();
+            const weekday = weekdays[dayNum];
+            const dayCount = Math.floor((event.day - 1) / 7) + 1;
+            let eDay;
+            while (d.getFullYear() === event.year) {
+                eDay = getNthDayInMonth(dayCount, weekday, months[d.getMonth()], event.year);
+                periodicDates += `${months[d.getMonth()]}/${eDay.getDate().toString().padStart(2, '0')}/${d.getFullYear()}${months[d.getMonth()]}/${event.year}`;
+                d = new Date(event.year, d.getMonth() + 1);
+            }
+        }
+        else {
+            let d = new Date(event.year, months.indexOf(event.month), event.day);
+            while (d.getFullYear() === event.year) {
+                periodicDates += `${months[d.getMonth()]}/${d.getDate().toString().padStart(2, '0')}/${d.getFullYear()}${months[d.getMonth()]}/${d.getFullYear()}`;
+                d.setDate(d.getDate() + {
+                    "Daily": 1,
+                    "Weekly": 7,
+                    "BiWeekly": 14
+                }[event.period]);
+            }
+        }
+    }
+    else {
+        periodicDates = `${event.month}/${event.day}/${event.year}${event.month}/${event.year}`;
+    }
+    const dbRes = yield db_service_1.default.row.create('event', Object.assign(Object.assign({}, event), { search: `${periodicDates}${event.time}${toRegularTime(event.time)}${event.location}${event.description}${event.period}${event.website}` }));
     if (dbRes.success) {
         return new Promise(res => res({
             code: 200,

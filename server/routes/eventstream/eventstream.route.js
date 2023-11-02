@@ -13,14 +13,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
+const models_1 = require("../../models/models");
+const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { afterID, numrows, search, id } = request.params;
+    // attempt format date and date-like searches to standard [monthname]/[dd]/[yyyy] or [monthname]/[yyyy]
+    let mappedSearch = search;
+    if (mappedSearch) {
+        mappedSearch = mappedSearch.trim().replace(/\s+/g, '/').replace(/-/g, '/');
+        const searchSplit = mappedSearch.split('/');
+        if (searchSplit.length === 3) {
+            let timestamp = Date.parse(mappedSearch);
+            if (!isNaN(timestamp)) {
+                let d = new Date(timestamp);
+                mappedSearch = `${months[d.getMonth()]}/${d.getDate()}/${d.getFullYear()}`;
+            }
+            else {
+                mappedSearch = search; // give up
+            }
+        }
+        else if (searchSplit.length === 2 && searchSplit[0].length) {
+            if (isNaN(searchSplit[0])) {
+                searchSplit[0] = searchSplit[0].charAt(0).toUpperCase() + searchSplit[0].slice(1).toLowerCase();
+                if (months.includes(searchSplit[0])) {
+                    mappedSearch = mappedSearch = `${searchSplit[0]}/${searchSplit[1].padStart(4, '20')}`;
+                }
+                else {
+                    mappedSearch = search;
+                }
+            }
+            else {
+                let m = parseInt(searchSplit[0]);
+                if (m >= 1 && m <= 12) {
+                    mappedSearch = mappedSearch = `${months[m - 1]}/${searchSplit[1].padStart(4, '20')}`;
+                }
+                else {
+                    mappedSearch = search;
+                }
+            }
+        }
+        else {
+            mappedSearch = search; // give up october  2023
+        }
+    }
     const dbRes = id ?
         yield db_service_1.default.row.read('event', { id: id })
         :
-            search ?
-                yield db_service_1.default.row.query(`SELECT * FROM "event" WHERE search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`) //DB.row.stream<any[]>('event', afterID, numrows)
+            mappedSearch ?
+                yield db_service_1.default.row.query(`SELECT * FROM "event" WHERE search ILIKE '%${mappedSearch}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`) //DB.row.stream<any[]>('event', afterID, numrows)
                 :
                     yield db_service_1.default.row.stream('event', afterID, numrows);
     if (dbRes.success) {
