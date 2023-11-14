@@ -33,6 +33,13 @@ const models = {
         avatar: `TEXT`,
         PRIMARY: 'KEY (username)'
     },
+    update: {
+        id: `SERIAL`,
+        userID: `NUMERIC`,
+        timestamp: `NUMERIC`,
+        body: `TEXT`,
+        search: `TEXT`
+    },
     contact: {
         id: `SERIAL`,
         timestamp: `NUMERIC`,
