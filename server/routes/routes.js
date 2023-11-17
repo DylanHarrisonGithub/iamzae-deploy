@@ -3,6 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const updateupdate_route_1 = __importDefault(require("./updateupdate/updateupdate.route"));
+const updateupdate_schema_1 = __importDefault(require("./updateupdate/updateupdate.schema"));
+const updatecreate_route_1 = __importDefault(require("./updatecreate/updatecreate.route"));
+const updatecreate_schema_1 = __importDefault(require("./updatecreate/updatecreate.schema"));
+const updatedelete_route_1 = __importDefault(require("./updatedelete/updatedelete.route"));
+const updatedelete_schema_1 = __importDefault(require("./updatedelete/updatedelete.schema"));
+const updatestream_route_1 = __importDefault(require("./updatestream/updatestream.route"));
+const updatestream_schema_1 = __importDefault(require("./updatestream/updatestream.schema"));
 const approvedreviewstream_route_1 = __importDefault(require("./approvedreviewstream/approvedreviewstream.route"));
 const approvedreviewstream_schema_1 = __importDefault(require("./approvedreviewstream/approvedreviewstream.schema"));
 const contactstream_route_1 = __importDefault(require("./contactstream/contactstream.route"));
@@ -42,6 +50,34 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    updateupdate: {
+        method: ['PATCH'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: updateupdate_schema_1.default,
+        route: updateupdate_route_1.default
+    },
+    updatecreate: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: updatecreate_schema_1.default,
+        route: updatecreate_route_1.default
+    },
+    updatedelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: updatedelete_schema_1.default,
+        route: updatedelete_route_1.default
+    },
+    updatestream: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: updatestream_schema_1.default,
+        route: updatestream_route_1.default
+    },
     approvedreviewstream: {
         method: ['GET'],
         contentType: "application/json",

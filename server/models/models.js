@@ -35,10 +35,12 @@ const models = {
     },
     update: {
         id: `SERIAL`,
-        userID: `NUMERIC`,
         timestamp: `NUMERIC`,
-        body: `TEXT`,
-        search: `TEXT`
+        subject: `TEXT`,
+        date: `TEXT`,
+        update: `TEXT`,
+        search: `TEXT`,
+        PRIMARY: `KEY (id)`
     },
     contact: {
         id: `SERIAL`,

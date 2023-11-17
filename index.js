@@ -74,7 +74,7 @@ app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, fun
     // for (const key of Object.keys(server.models)) {
     //   console.log((await db.table.delete(key)).messages);
     // }
-    // console.log(await db.table.delete('event'));
+    // console.log(await db.table.delete('update'));
     // //!!!! uncomment before deploying !!!!
     for (const key of Object.keys(server_1.default.models)) {
         console.log((yield db_service_1.default.table.create(key, server_1.default.models[key])).messages);
