@@ -20,7 +20,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const salt = crypto_1.default.randomBytes(32).toString('hex');
     const hash = yield crypto_1.default.pbkdf2Sync(password, salt, 32, 64, 'sha512').toString('hex');
     const res = yield db_service_1.default.row.create('user', { username: username, privilege: 'user', password: hash, salt: salt, avatar: `https://avatars.dicebear.com/api/male/john.svg?background=%230000ff` });
-    const token = yield authentication_service_1.default.generateToken({ username: username, privelilege: 'user', dummy: "" });
+    const token = yield authentication_service_1.default.generateToken({ username: username, privilege: 'user', dummy: "" });
     if (res.success && token.success) {
         return new Promise(resolve => resolve({
             code: 200,
