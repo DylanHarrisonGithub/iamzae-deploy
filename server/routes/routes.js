@@ -3,6 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const deletetrack_route_1 = __importDefault(require("./deletetrack/deletetrack.route"));
+const deletetrack_schema_1 = __importDefault(require("./deletetrack/deletetrack.schema"));
+const tracklist_route_1 = __importDefault(require("./tracklist/tracklist.route"));
+const tracklist_schema_1 = __importDefault(require("./tracklist/tracklist.schema"));
+const uploadtrack_route_1 = __importDefault(require("./uploadtrack/uploadtrack.route"));
+const uploadtrack_schema_1 = __importDefault(require("./uploadtrack/uploadtrack.schema"));
 const updateupdate_route_1 = __importDefault(require("./updateupdate/updateupdate.route"));
 const updateupdate_schema_1 = __importDefault(require("./updateupdate/updateupdate.schema"));
 const updatecreate_route_1 = __importDefault(require("./updatecreate/updatecreate.route"));
@@ -50,6 +56,27 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    deletetrack: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: deletetrack_schema_1.default,
+        route: deletetrack_route_1.default
+    },
+    tracklist: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: tracklist_schema_1.default,
+        route: tracklist_route_1.default
+    },
+    uploadtrack: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: uploadtrack_schema_1.default,
+        route: uploadtrack_route_1.default
+    },
     updateupdate: {
         method: ['PATCH'],
         contentType: "application/json",
