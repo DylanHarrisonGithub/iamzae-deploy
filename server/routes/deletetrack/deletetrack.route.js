@@ -23,8 +23,10 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
+    console.log('attempting to delete');
     try {
         const resDel = yield file_service_1.default.delete(`public/tracks/` + request.params.filename);
+        console.log('hello', resDel);
         return new Promise(res => res({ code: 200, json: { success: true, messages: [
                     `SERVER - ROUTES - DELETETRACK - Media file ${request.params.filename} successfully deleted.`,
                     ...resDel.messages

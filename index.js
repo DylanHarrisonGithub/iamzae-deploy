@@ -19,7 +19,6 @@ const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const path_1 = __importDefault(require("path"));
 const os_1 = __importDefault(require("os"));
 const server_1 = __importDefault(require("./server/server"));
-const db_service_1 = __importDefault(require("./server/services/db/db.service"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ credentials: true }));
 app.use(express_1.default.json());
@@ -76,8 +75,8 @@ app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, fun
     // }
     // console.log(await db.table.delete('update'));
     // //!!!! uncomment before deploying !!!!
-    for (const key of Object.keys(server_1.default.models)) {
-        console.log((yield db_service_1.default.table.create(key, server_1.default.models[key])).messages);
-    }
+    // for (const key of Object.keys(server.models)) {
+    //   console.log((await db.table.create(key, (<any>server.models)[key])).messages);
+    // }
     console.log('host: ' + os_1.default.hostname());
 }));
