@@ -9,6 +9,7 @@ const requestParser_service_1 = __importDefault(require("./requestParser/request
 const authentication_service_1 = __importDefault(require("./authentication/authentication.service"));
 const router_service_1 = __importDefault(require("./router/router.service"));
 const validation_service_1 = __importDefault(require("./validation/validation.service"));
+const email_service_1 = __importDefault(require("./email/email.service"));
 // syntactic hack to mandate that services conform to Service type
 const services = (() => {
     const service = {
@@ -18,6 +19,7 @@ const services = (() => {
         requestParser: requestParser_service_1.default,
         validation: validation_service_1.default,
         router: router_service_1.default,
+        email: email_service_1.default
     };
     return service;
 })();

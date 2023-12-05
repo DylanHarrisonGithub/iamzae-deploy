@@ -8,12 +8,17 @@ const path_1 = __importDefault(require("path"));
 const config = {
     SERVER_SECRET: process.env.SERVER_SECRET || 'abcdefg',
     DATABASE_URL: process.env.DATABASE_URL || '',
-    APPNAME: 'CrudStore',
+    APPNAME: 'iamzae',
     ENVIRONMENT: ((_a = process.env.NODE_ENV) === null || _a === void 0 ? void 0 : _a.toUpperCase()) || 'DEVELOPMENT',
     SOCKET_CONNECT_PRIVELEGE: ['guest', 'user', 'admin'],
     ROOT_DIR: path_1.default.normalize(__dirname + `/../../`),
     PORT: process.env.PORT || 3000,
     ROOT_URL: '/',
-    ERROR_URL: '/error'
+    ERROR_URL: '/error',
+    NODEMAILER: {
+        EMAIL: process.env.NODEMAILER_EMAIL || '',
+        PASSWORD: process.env.NODEMAILER_PASSWORD || ''
+    },
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL || ''
 };
 exports.default = config;

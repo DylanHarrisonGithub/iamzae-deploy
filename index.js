@@ -19,6 +19,7 @@ const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const path_1 = __importDefault(require("path"));
 const os_1 = __importDefault(require("os"));
 const server_1 = __importDefault(require("./server/server"));
+const config_1 = __importDefault(require("./server/config/config"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ credentials: true }));
 app.use(express_1.default.json());
@@ -68,7 +69,7 @@ app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'publ
 app.use(express_1.default.static(path_1.default.join(__dirname, 'client')));
 app.get('/*', (req, res) => res.sendFile(path_1.default.resolve(__dirname, './client', 'index.html')));
 app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`iamzae listening on port ${process.env.PORT || 3000}`);
+    console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
     // full db delete
     // for (const key of Object.keys(server.models)) {
     //   console.log((await db.table.delete(key)).messages);

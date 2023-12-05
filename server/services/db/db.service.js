@@ -13,7 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = __importDefault(require("pg"));
-const quoteString = (val) => (typeof val === 'string') ? "'" + val + "'" : val;
+const quoteString = (val) => (typeof val === 'string') ? "'" + escape(val) + "'" : val;
+const escape = (v) => v.replace(/'/g, `''`);
+const unescape = (v) => v.replace(/''/g, `'`);
+const unescapeRows = (rows) => rows.map(row => Object.keys(row).reduce((acc, key) => typeof row[key] === 'string' ? Object.assign({ [key]: unescape(row[key]) }, acc) : Object.assign({ [key]: row[key] }, acc), {}));
 const db = (() => {
     const service = {
         row: {
@@ -55,7 +58,7 @@ const db = (() => {
                     : ``};`;
                 try {
                     yield client.connect();
-                    const result = (yield client.query(query)).rows;
+                    const result = unescapeRows((yield client.query(query)).rows);
                     yield client.end();
                     return {
                         success: true,
@@ -88,7 +91,7 @@ const db = (() => {
                     : ``} ORDER BY id ASC LIMIT ${numrows};`;
                 try {
                     yield client.connect();
-                    const result = (yield client.query(query)).rows;
+                    const result = unescapeRows((yield client.query(query)).rows);
                     yield client.end();
                     return {
                         success: true,
@@ -133,7 +136,7 @@ const db = (() => {
                 }
                 try {
                     yield client.connect();
-                    const result = ((yield client.query(query)).rows[0]);
+                    const result = (unescapeRows((yield client.query(query)).rows)[0]);
                     yield client.end();
                     return {
                         success: true,
@@ -191,7 +194,7 @@ const db = (() => {
                 const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 try {
                     yield client.connect();
-                    const result = (yield client.query(query)).rows;
+                    const result = unescapeRows((yield client.query(query)).rows);
                     yield client.end();
                     return {
                         success: true,

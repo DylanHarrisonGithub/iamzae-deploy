@@ -41,6 +41,7 @@ const requestParser = (() => {
                 method: req.method,
                 accepts: req.get('Accept') || '',
                 route: route,
+                host: req.get('Host') || '',
                 token: token,
                 params: (req.method === 'GET' || req.method === 'DELETE') ? req.query : req.body,
                 files: req.files
