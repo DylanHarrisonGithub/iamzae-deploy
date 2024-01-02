@@ -14,7 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    const { afterID, numrows, search, id, event } = request.params;
+    var _a;
+    const { afterID, numrows, search, id, event } = Object.assign(Object.assign({}, request.params), { search: (_a = request.params.search) === null || _a === void 0 ? void 0 : _a.replace(/'/g, `''`) });
     const dbRes = id ?
         yield db_service_1.default.row.read('review', { id: id, approved: 'true' })
         :

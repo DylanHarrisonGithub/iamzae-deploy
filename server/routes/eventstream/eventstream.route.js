@@ -27,8 +27,8 @@ const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const models_1 = require("../../models/models");
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { afterID, numrows, search, id } = request.params;
+    var _a, _b;
+    const { afterID, numrows, search, id } = Object.assign(Object.assign({}, request.params), { search: (_a = request.params.search) === null || _a === void 0 ? void 0 : _a.replace(/'/g, `''`) });
     // attempt format date and date-like searches to standard [monthname]/[dd]/[yyyy] or [monthname]/[yyyy]
     let mappedSearch = search;
     if (mappedSearch) {
@@ -76,7 +76,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
                 :
                     yield db_service_1.default.row.stream('event', afterID, numrows);
     if (dbRes.success) {
-        const events = (_a = dbRes.body) === null || _a === void 0 ? void 0 : _a.map(e => { var _a; return (Object.assign(Object.assign({}, e), { media: ((_a = e.media) === null || _a === void 0 ? void 0 : _a.length) ? e.media.split(',') : [] })); });
+        const events = (_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.map(e => { var _a; return (Object.assign(Object.assign({}, e), { media: ((_a = e.media) === null || _a === void 0 ? void 0 : _a.length) ? e.media.split(',') : [] })); });
         return new Promise(res => res({
             code: 200,
             json: {
