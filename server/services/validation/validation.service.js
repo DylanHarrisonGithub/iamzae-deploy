@@ -53,7 +53,7 @@ const validation2 = (() => {
             (_k = (_j = schema[key].attributes) === null || _j === void 0 ? void 0 : _j.tests) === null || _k === void 0 ? void 0 : _k.forEach((test) => {
                 let res = test(root, input);
                 if (!res.success) {
-                    errors.push(key + (res.message || ` failed custom test.`));
+                    errors.push(key + ` ` + (res.message || ` failed custom test.`));
                 }
             });
             console.log(errors);

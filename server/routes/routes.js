@@ -3,6 +3,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const maildelete_route_1 = __importDefault(require("./maildelete/maildelete.route"));
+const maildelete_schema_1 = __importDefault(require("./maildelete/maildelete.schema"));
+const maillist_route_1 = __importDefault(require("./maillist/maillist.route"));
+const maillist_schema_1 = __importDefault(require("./maillist/maillist.schema"));
+const calchdusage_route_1 = __importDefault(require("./calchdusage/calchdusage.route"));
+const calchdusage_schema_1 = __importDefault(require("./calchdusage/calchdusage.schema"));
+const mailopt_route_1 = __importDefault(require("./mailopt/mailopt.route"));
+const mailopt_schema_1 = __importDefault(require("./mailopt/mailopt.schema"));
+const mailgencode_route_1 = __importDefault(require("./mailgencode/mailgencode.route"));
+const mailgencode_schema_1 = __importDefault(require("./mailgencode/mailgencode.schema"));
+const userpwdreset_route_1 = __importDefault(require("./userpwdreset/userpwdreset.route"));
+const userpwdreset_schema_1 = __importDefault(require("./userpwdreset/userpwdreset.schema"));
+const usergencode_route_1 = __importDefault(require("./usergencode/usergencode.route"));
+const usergencode_schema_1 = __importDefault(require("./usergencode/usergencode.schema"));
 const deletetrack_route_1 = __importDefault(require("./deletetrack/deletetrack.route"));
 const deletetrack_schema_1 = __importDefault(require("./deletetrack/deletetrack.schema"));
 const tracklist_route_1 = __importDefault(require("./tracklist/tracklist.route"));
@@ -56,6 +70,55 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    maildelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: maildelete_schema_1.default,
+        route: maildelete_route_1.default
+    },
+    maillist: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: maillist_schema_1.default,
+        route: maillist_route_1.default
+    },
+    calchdusage: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: calchdusage_schema_1.default,
+        route: calchdusage_route_1.default
+    },
+    mailopt: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: mailopt_schema_1.default,
+        route: mailopt_route_1.default
+    },
+    mailgencode: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: mailgencode_schema_1.default,
+        route: mailgencode_route_1.default
+    },
+    userpwdreset: {
+        method: ['PATCH'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: userpwdreset_schema_1.default,
+        route: userpwdreset_route_1.default
+    },
+    usergencode: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: usergencode_schema_1.default,
+        route: usergencode_route_1.default
+    },
     deletetrack: {
         method: ['DELETE'],
         contentType: "application/json",

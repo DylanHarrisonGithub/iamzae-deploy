@@ -19,6 +19,7 @@ const config = {
         EMAIL: process.env.NODEMAILER_EMAIL || '',
         PASSWORD: process.env.NODEMAILER_PASSWORD || ''
     },
-    ADMIN_EMAIL: process.env.ADMIN_EMAIL || ''
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',
+    MAX_HD_SIZE_GB: process.env.MAX_HD_SIZE_GB || 20
 };
 exports.default = config;

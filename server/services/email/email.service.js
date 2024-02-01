@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const validation_service_1 = require("../validation/validation.service");
 const config_1 = __importDefault(require("../../config/config"));
 const email = (() => {
     const service = (recipient, subject, text, html) => __awaiter(void 0, void 0, void 0, function* () {
@@ -20,6 +21,12 @@ const email = (() => {
             return new Promise(res => res({
                 success: false,
                 messages: [`SERVER - Services - EmailService - Email not configured.`]
+            }));
+        }
+        if (!validation_service_1.COMMON_REGEXES.EMAIL.test(recipient)) {
+            return new Promise(res => res({
+                success: false,
+                messages: [`SERVER - Services - EmailService - Recipient email "${recipient}" is not a valid email address.`]
             }));
         }
         let mailOptions = {

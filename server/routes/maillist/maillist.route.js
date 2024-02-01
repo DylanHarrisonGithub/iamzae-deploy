@@ -14,15 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    const safeupdate = [
-        'username', 'avatar', 'privilege'
-    ].reduce((a, v) => request.params.update[v] ? Object.assign(Object.assign({}, a), { [v]: request.params.update[v] }) : a, {});
-    var queryResult = yield db_service_1.default.row.update('user', safeupdate, { id: request.params.id });
+    const maillistRes = yield db_service_1.default.row.read('mail');
+    if (!maillistRes.success) {
+        return new Promise(res => res({
+            code: 500,
+            json: {
+                success: false,
+                messages: [
+                    `SERVER - ROUTES - MAILLIST - Email list could not be retrieved.`,
+                    ...maillistRes.messages
+                ]
+            }
+        }));
+    }
     return new Promise(res => res({
         code: 200,
         json: {
-            success: queryResult.success,
-            messages: queryResult.messages
+            success: true,
+            messages: [
+                `SERVER - ROUTES - MAILLIST - Email list successfully retrieved.`,
+                ...maillistRes.messages
+            ],
+            body: maillistRes.body
         }
     }));
 });

@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.timeData = void 0;
+exports.timeData = exports.acceptedMediaExtensions = void 0;
+exports.acceptedMediaExtensions = {
+    image: ['gif', 'jpg', 'jpeg', 'png', 'heic'],
+    video: ['mov', 'mp4', 'mpeg', 'webm', 'ogg'],
+    audio: ['mp3', 'wav', 'ogg']
+};
 exports.timeData = {
     periods: ['Once', 'Daily', 'Weekly', 'BiWeekly', 'Monthly'],
     weekdays: [
@@ -27,10 +32,14 @@ const models = {
     user: {
         id: `SERIAL`,
         username: 'TEXT',
+        email: `TEXT`,
         password: 'TEXT',
         salt: 'TEXT',
         privilege: `TEXT`,
         avatar: `TEXT`,
+        reset: `TEXT`,
+        resetstamp: `TEXT`,
+        tries: `NUMERIC`,
         PRIMARY: 'KEY (username)'
     },
     update: {
@@ -53,13 +62,15 @@ const models = {
     },
     event: {
         id: `SERIAL`,
-        day: 'TEXT',
+        day: `NUMERIC`,
         month: 'TEXT',
         year: `NUMERIC`,
         time: 'TEXT',
         timestamp: 'NUMERIC',
         period: 'TEXT',
         location: 'TEXT',
+        addressa: 'TEXT',
+        addressb: 'TEXT',
         thumbnail: 'TEXT',
         description: 'TEXT',
         website: 'TEXT',
@@ -76,6 +87,14 @@ const models = {
         stars: `NUMERIC`,
         text: `TEXT`,
         search: 'TEXT',
+        PRIMARY: `KEY (id)`
+    },
+    mail: {
+        id: `SERIAL`,
+        email: `TEXT`,
+        code: `TEXT`,
+        salt: `TEXT`,
+        verified: `TEXT`,
         PRIMARY: `KEY (id)`
     }
 };

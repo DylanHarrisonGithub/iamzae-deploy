@@ -12,12 +12,21 @@ const registerSchema = {
     password: {
         type: validation_service_1.COMMON_REGEXES.PASSWORD_STRONGEST,
         attributes: {
-            required: false,
+            required: true,
             strLength: { minLength: 8 }
         }
     },
-    dummy: {
-        type: 'string'
+    avatar: {
+        type: 'string',
+        attributes: {
+            required: false,
+        }
+    },
+    email: {
+        type: 'string',
+        attributes: {
+            required: false
+        }
     }
 };
 exports.default = registerSchema;
