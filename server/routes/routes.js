@@ -276,7 +276,7 @@ const routes = {
     uploadmedia: {
         method: ['POST'],
         contentType: "application/json",
-        privilege: ['user', 'admin'],
+        privilege: ['user'],
         schema: uploadmedia_schema_1.default,
         route: uploadmedia_route_1.default
     },
@@ -297,7 +297,7 @@ const routes = {
     register: {
         method: ["POST"],
         contentType: "application/json",
-        privilege: (config_1.default.ENVIRONMENT === 'DEVELOPMENT') ? ['guest', 'admin'] : ['admin'],
+        privilege: (config_1.default.ENVIRONMENT === 'DEVELOPMENT') ? ['guest', 'user'] : ['user'],
         schema: register_schema_1.default,
         route: register_route_1.default
     },

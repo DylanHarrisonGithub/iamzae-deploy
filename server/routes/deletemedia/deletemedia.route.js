@@ -24,7 +24,13 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         }));
     }
     try {
-        const res = yield file_service_1.default.delete(`public/media/` + request.params.filename);
+        const delres = yield file_service_1.default.delete(`public/media/` + request.params.filename);
+        if (!delres.success) {
+            return new Promise(res => res({ code: 400, json: { success: true, messages: [
+                        `SERVER - ROUTES - DELETEMEDIA - Media file ${request.params.filename} could not be deleted.`,
+                        ...delres.messages
+                    ] } }));
+        }
         return new Promise(res => res({ code: 200, json: { success: true, messages: [`SERVER - ROUTES - DELETEMEDIA - Media file ${request.params.filename} successfully deleted.`] } }));
     }
     catch (err) {

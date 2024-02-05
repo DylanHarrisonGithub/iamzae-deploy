@@ -13,8 +13,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const file_service_1 = __importDefault(require("../../services/file/file.service"));
-const acceptedMedia = ['mp3', 'wav', 'ogg'];
+const models_1 = require("../../models/models");
 exports.default = (request) => new Promise(res => {
+    const filename = request.files[0];
+    if (!filename) {
+        res({
+            code: 400,
+            json: {
+                success: false,
+                messages: [
+                    "SERVER - ROUTES - UPLOADTRACK - Failed to upload file.",
+                    "SERVER - ROUTES - UPLOADTRACK - No file was received."
+                ]
+            }
+        });
+    }
+    if (!(models_1.acceptedMediaExtensions.audio.filter(accepted => filename.toLowerCase().endsWith(accepted)).length)) {
+        res({
+            code: 400,
+            json: {
+                success: false,
+                messages: [
+                    "SERVER - ROUTES - UPLOADTRACK - Failed to upload file.",
+                    "SERVER - ROUTES - UPLOADTRACK - File type not allowed.",
+                    //`SERVER - ROUTES - UPLOADTRACK - Allowed file extensions: ${acceptedMediaExtensions.image + ", " + acceptedMediaExtensions.video}.`,
+                ]
+            }
+        });
+    }
     request.files[Object.keys(request.files)[0]].mv('public/tracks/' + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
         if (err) {
             res({ code: 200, json: { success: false, messages: ["SERVER - ROUTES - UPLOADTRACK - Failed to upload file."].concat(err.toString()) } });
