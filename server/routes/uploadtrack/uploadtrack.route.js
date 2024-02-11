@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const file_service_1 = __importDefault(require("../../services/file/file.service"));
 const models_1 = require("../../models/models");
 exports.default = (request) => new Promise(res => {
-    const filename = request.files[0];
+    const filename = Object.keys(request.files)[0];
     if (!filename) {
         res({
             code: 400,
