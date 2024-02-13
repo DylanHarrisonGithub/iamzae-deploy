@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = __importDefault(require("crypto"));
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const email_service_1 = __importDefault(require("../../services/email/email.service"));
+const onetimepasscode_template_1 = __importDefault(require("../../email-templates/onetimepasscode.template"));
 const config_1 = __importDefault(require("../../config/config"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -54,7 +55,8 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         config_1.default.ADMIN_EMAIL,
         user.email
     ].reduce((pv, cv) => (cv && cv.length) ? cv : pv, 'NORECIPIENT');
-    const emailResult = yield (0, email_service_1.default)(recipient, `${user.username} code request`, `${code}`);
+    const emailResult = yield (0, email_service_1.default)(recipient, `${user.username} code request`, undefined, //`${code}`,
+    (0, onetimepasscode_template_1.default)(code));
     if (!emailResult.success) {
         return new Promise(res => res({
             code: 500,

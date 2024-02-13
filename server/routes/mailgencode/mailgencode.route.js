@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = __importDefault(require("crypto"));
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const email_service_1 = __importDefault(require("../../services/email/email.service"));
+const onetimepasscode_template_1 = __importDefault(require("../../email-templates/onetimepasscode.template"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { email } = request.params;
@@ -61,7 +62,8 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
-    const emailResult = yield (0, email_service_1.default)(email, `${email} code request`, `${code}`);
+    const emailResult = yield (0, email_service_1.default)(email, `iamzae.com code request`, undefined, //`${code}`
+    (0, onetimepasscode_template_1.default)(code));
     if (!emailResult.success) {
         return new Promise(res => res({
             code: 500,

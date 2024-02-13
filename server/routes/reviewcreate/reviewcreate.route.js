@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const email_service_1 = __importDefault(require("../../services/email/email.service"));
+const review_template_1 = __importDefault(require("../../email-templates/review.template"));
 const models_1 = require("../../models/models");
 const config_1 = __importDefault(require("../../config/config"));
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
@@ -34,38 +35,53 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const dbRes = yield db_service_1.default.row.create('review', review);
     if (dbRes.success) {
-        const emailRes = yield (0, email_service_1.default)(config_1.default.ADMIN_EMAIL || config_1.default.NODEMAILER.EMAIL, `Review from ${review.name} needs approval`, undefined, `
-        <table>
-          <tr>
-            <td>Review ID:</td>
-            <td>${((_a = dbRes.body) === null || _a === void 0 ? void 0 : _a.id) || 'no id'}</td>
-          </tr>
-          <tr>
-            <td>Event ID:</td>
-            <td>${review.event}</td>
-          </tr>
-          <tr>
-            <td>Review date:</td>
-            <td>${month}/${day}/${year}</td>
-          </tr>
-          <tr>
-            <td>Reviewer name:</td>
-            <td>${review.name}</td>
-          </tr>
-          <tr>
-            <td>Rating:</td>
-            <td>${review.stars}</td>
-          </tr>
-          <tr>
-            <td>Review:</td>
-            <td>${review.text}</td>
-          </tr>
-        </table>
-        <p>Pleave visit <a href="${config_1.default.ENVIRONMENT === 'DEVELOPMENT' ?
+        const emailRes = yield (0, email_service_1.default)(config_1.default.ADMIN_EMAIL || config_1.default.NODEMAILER.EMAIL, `Review from ${review.name} needs approval`, undefined, 
+        // `
+        //   <table>
+        //     <tr>
+        //       <td>Review ID:</td>
+        //       <td>${dbRes.body?.id || 'no id'}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Event ID:</td>
+        //       <td>${review.event}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Review date:</td>
+        //       <td>${month}/${day}/${year}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Reviewer name:</td>
+        //       <td>${review.name}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Rating:</td>
+        //       <td>${review.stars}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Review:</td>
+        //       <td>${review.text}</td>
+        //     </tr>
+        //   </table>
+        //   <p>Pleave visit <a href="${
+        //     config.ENVIRONMENT === 'DEVELOPMENT' ? 
+        //       `http://localhost:4200` 
+        //     : 
+        //       `https://${request.host}`
+        //     }/admin/reviews/${dbRes.body?.id || ''
+        //   }">here</a> to approve or reject this review.</p>
+        // `
+        (0, review_template_1.default)(`${config_1.default.ENVIRONMENT === 'DEVELOPMENT' ?
             `http://localhost:4200`
             :
-                `https://${request.host}`}/admin/reviews/${((_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.id) || ''}">here</a> to approve or reject this review.</p>
-      `);
+                `https://${request.host}`}/admin/reviews/${((_a = dbRes.body) === null || _a === void 0 ? void 0 : _a.id) || ''}`, {
+            id: ((_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.id.toString()) || 'no id',
+            eventId: review.event.toString(),
+            month: month, day: day, year: year,
+            name: review.name,
+            stars: review.stars,
+            reviewBody: review.text
+        }));
         return new Promise(res => res({
             code: 200,
             json: {

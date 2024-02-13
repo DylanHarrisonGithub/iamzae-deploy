@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
+const email_service_1 = __importDefault(require("../../services/email/email.service"));
+const update_template_1 = __importDefault(require("../../email-templates/update.template"));
 const models_1 = require("../../models/models");
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,6 +32,23 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const dbRes = yield db_service_1.default.row.create('update', newUpdate);
     if (dbRes.success) {
+        db_service_1.default.row.read('mail', { verified: 'true' }).then(mailres => {
+            if (mailres.success && mailres.body) {
+                const template = (0, update_template_1.default)('https://iamzae.com/news', {
+                    subject: newUpdate.subject,
+                    month: month, day: day, year: year,
+                    body: newUpdate.update
+                });
+                mailres.body.forEach(m => {
+                    if (m.verified === 'true') {
+                        (0, email_service_1.default)(m.email, 'iamzae.com update', undefined, template);
+                    }
+                });
+            }
+            else {
+                console.log(mailres.messages);
+            }
+        }).catch(err => console.log(err));
         return new Promise(res => res({
             code: 200,
             json: {

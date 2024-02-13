@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 const email_service_1 = __importDefault(require("../../services/email/email.service"));
+const contact_template_1 = __importDefault(require("../../email-templates/contact.template"));
 const models_1 = require("../../models/models");
 const config_1 = __importDefault(require("../../config/config"));
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
@@ -32,34 +33,43 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const dbRes = yield db_service_1.default.row.create('contact', contact);
     if (dbRes.success) {
-        const emailRes = yield (0, email_service_1.default)(config_1.default.ADMIN_EMAIL || config_1.default.NODEMAILER.EMAIL, `New contact from ${contact.email}`, undefined, `
-        <table>
-          <tr>
-            <td>Contact ID:</td>
-            <td>${((_a = dbRes.body) === null || _a === void 0 ? void 0 : _a.id) || 'no id'}</td>
-          </tr>
-          <tr>
-            <td>From: </td>
-            <td>${contact.email}</td>
-          </tr>
-          <tr>
-            <td>Contact date:</td>
-            <td>${month}/${day}/${year}</td>
-          </tr>
-          <tr>
-            <td>Subject:</td>
-            <td>${contact.subject}</td>
-          </tr>
-          <tr>
-            <td>Message:</td>
-            <td>${contact.message}</td>
-          </tr>
-        </table>
-        <p>Pleave visit <a href="${config_1.default.ENVIRONMENT === 'DEVELOPMENT' ?
+        const emailRes = yield (0, email_service_1.default)(config_1.default.ADMIN_EMAIL || config_1.default.NODEMAILER.EMAIL, `New contact from ${contact.email}`, undefined, 
+        // `
+        //   <table>
+        //     <tr>
+        //       <td>Contact ID:</td>
+        //       <td>${dbRes.body?.id || 'no id'}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>From: </td>
+        //       <td>${contact.email}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Contact date:</td>
+        //       <td>${month}/${day}/${year}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Subject:</td>
+        //       <td>${contact.subject}</td>
+        //     </tr>
+        //     <tr>
+        //       <td>Message:</td>
+        //       <td>${contact.message}</td>
+        //     </tr>
+        //   </table>
+        //   <p>Pleave visit <a href="${
+        //     config.ENVIRONMENT === 'DEVELOPMENT' ? 
+        //       `http://localhost:4200` 
+        //     : 
+        //       `https://${request.host}`
+        //     }/admin/contacts/${dbRes.body?.id || ''
+        //   }">here</a> to view or delete this contact message.</p>
+        // `
+        (0, contact_template_1.default)(((_a = dbRes.body) === null || _a === void 0 ? void 0 : _a.id.toString()) || 'no id', contact.email, month, day.toString(), year.toString(), contact.subject, contact.message, config_1.default.ENVIRONMENT === 'DEVELOPMENT' ?
             `http://localhost:4200`
             :
-                `https://${request.host}`}/admin/contacts/${((_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.id) || ''}">here</a> to view or delete this contact message.</p>
-      `);
+                `https://${request.host}
+          }/admin/contacts/${((_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.id) || ''}`));
         return new Promise(res => res({
             code: 200,
             json: {

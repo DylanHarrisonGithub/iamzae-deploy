@@ -24,7 +24,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
+const email_service_1 = __importDefault(require("../../services/email/email.service"));
 const models_1 = require("../../models/models");
+const event_template_1 = __importDefault(require("../../email-templates/event.template"));
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = models_1.timeData;
 const toRegularTime = (militaryTime) => {
     const [hours, minutes] = militaryTime.split(':').map(t => parseInt(t));
@@ -74,6 +76,30 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const dbRes = yield db_service_1.default.row.create('event', Object.assign(Object.assign({}, event), { search: `${periodicDates}${event.time}${toRegularTime(event.time)}${event.location}${event.description}${event.period}${event.website}` }));
     if (dbRes.success) {
+        db_service_1.default.row.read('mail', { verified: 'true' }).then(mailres => {
+            if (mailres.success && mailres.body) {
+                const template = (0, event_template_1.default)(`https://iamzae.com/events?search=${months.indexOf(event.month) + 1}%2F${event.day}%2F${event.year}`, {
+                    day: event.day,
+                    month: event.month,
+                    year: event.year,
+                    time: event.time,
+                    period: event.period,
+                    addressLine1: event.addressa,
+                    addressLine2: event.addressb,
+                    venueName: event.location,
+                    description: event.description,
+                    venueWebsite: event.website
+                });
+                mailres.body.forEach(m => {
+                    if (m.verified === 'true') {
+                        (0, email_service_1.default)(m.email, 'iamzae.com new event scheduled', undefined, template);
+                    }
+                });
+            }
+            else {
+                console.log(mailres.messages);
+            }
+        }).catch(err => console.log(err));
         return new Promise(res => res({
             code: 200,
             json: {
