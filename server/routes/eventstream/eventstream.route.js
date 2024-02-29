@@ -65,16 +65,16 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         else {
-            mappedSearch = search; // give up october  2023
+            mappedSearch = search; // give up
         }
     }
     const dbRes = id ?
         yield db_service_1.default.row.read('event', { id: id })
         :
             mappedSearch ?
-                yield db_service_1.default.row.query(`SELECT * FROM "event" WHERE search ILIKE '%${mappedSearch}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`) //DB.row.stream<any[]>('event', afterID, numrows)
+                yield db_service_1.default.row.query(`SELECT * FROM "event" WHERE search ILIKE '%${mappedSearch}%' AND id < ${afterID} ORDER BY id DESC LIMIT ${numrows};`)
                 :
-                    yield db_service_1.default.row.stream('event', afterID, numrows);
+                    yield db_service_1.default.row.query(`SELECT * FROM "event" WHERE id < ${afterID} ORDER BY id DESC LIMIT ${numrows};`);
     if (dbRes.success) {
         const events = (_b = dbRes.body) === null || _b === void 0 ? void 0 : _b.map(e => { var _a; return (Object.assign(Object.assign({}, e), { media: ((_a = e.media) === null || _a === void 0 ? void 0 : _a.length) ? e.media.split(',') : [] })); });
         return new Promise(res => res({

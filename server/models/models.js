@@ -19,12 +19,12 @@ exports.timeData = {
     ],
     years: [...[...Array(40).keys()].map(y => y + 2020)],
     dates: [...Array(32).keys()],
-    times: [...[...Array(23).keys()].reduce((a, h) => [
+    times: [...[...Array(24).keys()].reduce((a, h) => [
             ...a,
-            `${h.toString().padStart(2, '0')}:00`,
-            `${h.toString().padStart(2, '0')}:15`,
-            `${h.toString().padStart(2, '0')}:30`,
-            `${h.toString().padStart(2, '0')}:45`,
+            `${(h % 12 || 12).toString().padStart(2, '0')}:00${h < 12 ? 'am' : 'pm'}`,
+            `${(h % 12 || 12).toString().padStart(2, '0')}:15${h < 12 ? 'am' : 'pm'}`,
+            `${(h % 12 || 12).toString().padStart(2, '0')}:30${h < 12 ? 'am' : 'pm'}`,
+            `${(h % 12 || 12).toString().padStart(2, '0')}:45${h < 12 ? 'am' : 'pm'}`,
         ], [])]
 };
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = exports.timeData;

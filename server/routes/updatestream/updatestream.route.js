@@ -20,9 +20,9 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         yield db_service_1.default.row.read('update', { id: id })
         :
             search ?
-                yield db_service_1.default.row.query(`SELECT * FROM "update" WHERE search ILIKE '%${search}%' AND id > ${afterID} ORDER BY id ASC LIMIT ${numrows};`)
+                yield db_service_1.default.row.query(`SELECT * FROM "update" WHERE search ILIKE '%${search}%' AND id < ${afterID} ORDER BY id DESC LIMIT ${numrows};`)
                 :
-                    yield db_service_1.default.row.stream('update', afterID, numrows);
+                    yield db_service_1.default.row.query(`SELECT * FROM "update" WHERE id < ${afterID} ORDER BY id DESC LIMIT ${numrows};`);
     if (dbRes.success) {
         const updates = dbRes.body;
         return new Promise(res => res({
