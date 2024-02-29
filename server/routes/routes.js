@@ -3,6 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const update_route_1 = __importDefault(require("./update/update.route"));
+const update_schema_1 = __importDefault(require("./update/update.schema"));
+const shutdown_route_1 = __importDefault(require("./shutdown/shutdown.route"));
+const shutdown_schema_1 = __importDefault(require("./shutdown/shutdown.schema"));
 const maildelete_route_1 = __importDefault(require("./maildelete/maildelete.route"));
 const maildelete_schema_1 = __importDefault(require("./maildelete/maildelete.schema"));
 const maillist_route_1 = __importDefault(require("./maillist/maillist.route"));
@@ -70,6 +74,20 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    update: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: update_schema_1.default,
+        route: update_route_1.default
+    },
+    shutdown: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: shutdown_schema_1.default,
+        route: shutdown_route_1.default
+    },
     maildelete: {
         method: ['DELETE'],
         contentType: "application/json",

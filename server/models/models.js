@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.timeData = exports.acceptedMediaExtensions = void 0;
 exports.acceptedMediaExtensions = {
-    image: ['gif', 'jpg', 'jpeg', 'png', 'heic'],
-    video: ['mov', 'mp4', 'mpeg', 'webm', 'ogg'],
-    audio: ['mp3', 'wav', 'ogg']
+    image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
+    video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
+    audio: ['.mp3', '.wav', '.ogg']
 };
 exports.timeData = {
     periods: ['Once', 'Daily', 'Weekly', 'BiWeekly', 'Monthly'],
