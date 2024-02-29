@@ -16,10 +16,10 @@ const path_1 = __importDefault(require("path"));
 const file_service_1 = __importDefault(require("../../services/file/file.service"));
 const models_1 = require("../../models/models");
 const config_1 = __importDefault(require("../../config/config"));
-exports.default = (request) => new Promise(res => {
+exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const filename = Object.keys(request.files)[0];
     if (!filename) {
-        res({
+        return new Promise(res => res({
             code: 400,
             json: {
                 success: false,
@@ -28,43 +28,70 @@ exports.default = (request) => new Promise(res => {
                     "SERVER - ROUTES - UPLOADTRACK - No file was received."
                 ]
             }
-        });
+        }));
     }
     if (!(models_1.acceptedMediaExtensions.audio.filter(accepted => filename.toLowerCase().endsWith(accepted)).length)) {
-        res({
+        return new Promise(res => res({
             code: 400,
             json: {
                 success: false,
                 messages: [
                     "SERVER - ROUTES - UPLOADTRACK - Failed to upload file.",
                     "SERVER - ROUTES - UPLOADTRACK - File type not allowed.",
-                    //`SERVER - ROUTES - UPLOADTRACK - Allowed file extensions: ${acceptedMediaExtensions.image + ", " + acceptedMediaExtensions.video}.`,
+                    `SERVER - ROUTES - UPLOADTRACK - Allowed file extensions: ${models_1.acceptedMediaExtensions.image + ", " + models_1.acceptedMediaExtensions.video}.`,
                 ]
             }
-        });
+        }));
     }
-    request.files[Object.keys(request.files)[0]].mv(path_1.default.normalize(config_1.default.ROOT_DIR + '/public/tracks/') + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
-        if (err) {
-            res({ code: 200, json: { success: false, messages: ["SERVER - ROUTES - UPLOADTRACK - Failed to upload file."].concat(err.toString()) } });
-        }
-        else {
-            file_service_1.default.readDirectory(`public/tracks`).then(sr => {
-                res({
-                    code: 200,
-                    json: {
-                        success: sr.success,
-                        messages: [
-                            sr.success ?
-                                "SERVER - ROUTES - UPLOADTRACK - Successfully loaded track list!"
-                                :
-                                    `Server - Routes - UPLOADTRACK - Failed to load track list.`,
-                            ...sr.messages,
-                            "SERVER - ROUTES - UPLOADTRACK - Track successfully uploaded!"
-                        ],
-                        body: sr.body
-                    }
+    const uploadRes = yield (new Promise((uRes) => {
+        request.files[Object.keys(request.files)[0]].mv(path_1.default.normalize(config_1.default.ROOT_DIR + '/public/tracks/') + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err) {
+                uRes({
+                    success: false,
+                    messages: ["SERVER - ROUTES - UPLOADTRACK - Failed to upload file."].concat(err.toString())
                 });
-            });
+            }
+            else {
+                uRes({
+                    success: true,
+                    messages: ["SERVER - ROUTES - UPLOADTRACK - File uploaded successfully."]
+                });
+            }
+        }));
+    }));
+    if (!uploadRes.success) {
+        return new Promise(res => res({
+            code: 500,
+            json: {
+                success: false,
+                messages: uploadRes.messages
+            }
+        }));
+    }
+    const fRead = yield file_service_1.default.readDirectory('public/track');
+    if (!fRead.success) {
+        return new Promise(res => res({
+            code: 207,
+            json: {
+                success: true,
+                messages: [
+                    "SERVER - ROUTES - UPLOADTRACK - Track successfully uploaded!",
+                    `Server - Routes - UPLOADTRACK - Failed to load track list.`,
+                    ...fRead.messages
+                ],
+                body: []
+            }
+        }));
+    }
+    return new Promise(res => res({
+        code: 200,
+        json: {
+            success: true,
+            messages: [
+                "SERVER - ROUTES - UPLOADTRACK - Track successfully uploaded!",
+                "SERVER - ROUTES - UPLOADTRACK - Successfully loaded track list!"
+            ],
+            body: fRead.body
         }
     }));
 });

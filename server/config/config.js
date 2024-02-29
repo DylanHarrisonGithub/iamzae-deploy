@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
+const crypto_1 = __importDefault(require("crypto"));
+const secret = crypto_1.default.randomBytes(64).toString('hex');
 const config = {
-    SERVER_SECRET: process.env.SERVER_SECRET || 'abcdefg',
+    SERVER_SECRET: process.env.SERVER_SECRET || secret,
     DATABASE_URL: process.env.DATABASE_URL || '',
     APPNAME: 'iamzae',
     ENVIRONMENT: ((_a = process.env.NODE_ENV) === null || _a === void 0 ? void 0 : _a.toUpperCase()) || 'DEVELOPMENT',
