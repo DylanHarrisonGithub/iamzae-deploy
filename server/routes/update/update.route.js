@@ -78,17 +78,21 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         }));
     }
     try {
-        const status = yield exec.execSync('git status');
+        const status = yield exec.execSync(`cd /etc/home/iamzae && sudo git status`);
         if (status.includes('Your branch is up to date')) {
             return new Promise(res => res({
                 code: 200,
                 json: {
                     success: true,
-                    messages: [`SERVER - ROUTES - UPDATE - Server did not update because it is already up to date.`]
+                    messages: [
+                        `SERVER - ROUTES - UPDATE - Server did not update because it is already up to date.`,
+                        status.toString()
+                    ],
                 }
             }));
         }
         if (status.includes('Your branch is behind')) {
+            // const status = await exec.spawn('sudo -sh iamzae-update.sh')
             exec.spawn('sudo -sh iamzae-update.sh');
             return new Promise(res => res({
                 code: 200,
@@ -96,7 +100,8 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
                     success: true,
                     messages: [
                         `SERVER - ROUTES - UPDATE - Server UPDATE dispatched.`,
-                        `SERVER - ROUTES - UPDATE - Server UPDATE will cause temporary outage.`
+                        `SERVER - ROUTES - UPDATE - Server UPDATE will cause temporary outage.`,
+                        // status.toString()            
                     ]
                 }
             }));
