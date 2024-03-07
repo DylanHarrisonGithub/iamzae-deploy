@@ -32,6 +32,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(require("child_process"));
+const path = __importStar(require("path"));
 const crypto_1 = __importDefault(require("crypto"));
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
@@ -78,7 +79,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         }));
     }
     try {
-        const status = yield exec.execSync(`cd /etc/home/iamzae && sudo git status`);
+        const status = yield exec.execSync(`sudo git fetch && sudo git status`);
         if (status.includes('Your branch is up to date')) {
             return new Promise(res => res({
                 code: 200,
@@ -92,26 +93,43 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }));
         }
         if (status.includes('Your branch is behind')) {
-            // const status = await exec.spawn('sudo -sh iamzae-update.sh')
-            exec.spawn('sudo -sh iamzae-update.sh');
-            return new Promise(res => res({
-                code: 200,
-                json: {
-                    success: true,
-                    messages: [
-                        `SERVER - ROUTES - UPDATE - Server UPDATE dispatched.`,
-                        `SERVER - ROUTES - UPDATE - Server UPDATE will cause temporary outage.`,
-                        // status.toString()            
-                    ]
-                }
-            }));
+            // const status = await exec.spawn('sudo  sh iamzae-update.sh')
+            //exec.spawn('cd .. && sudo sh iamzae-update.sh', { shell: true, detached: true, stdio: 'inherit' })
+            try {
+                const parentDir = path.resolve(__dirname, '..');
+                const child = exec.spawn('sudo', ['sh', 'iamzae-update.sh'], { detached: true, stdio: 'inherit', shell: true, cwd: parentDir });
+                child.unref();
+                return new Promise(res => res({
+                    code: 200,
+                    json: {
+                        success: true,
+                        messages: [
+                            `SERVER - ROUTES - UPDATE - Server UPDATE dispatched.`,
+                            `SERVER - ROUTES - UPDATE - Server UPDATE will cause temporary outage.`,
+                            // status.toString()            
+                        ]
+                    }
+                }));
+            }
+            catch (e) {
+                return new Promise(res => res({
+                    code: 500,
+                    json: {
+                        success: false,
+                        messages: [
+                            `SERVER - ROUTES - UPDATE - Error occurred while updating server.`,
+                            status.toString()
+                        ]
+                    }
+                }));
+            }
         }
         return new Promise(res => res({
             code: 500,
             json: {
                 success: false,
                 messages: [
-                    `SERVER - ROUTES - UPDATE - Error occured attempting to update server.`,
+                    `SERVER - ROUTES - UPDATE - Failed to update server.`,
                     `SERVER - ROUTES - UPDATE - Local repository may be configured incorrectly.`,
                     status.toString()
                 ]
@@ -123,7 +141,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             code: 500,
             json: {
                 success: false,
-                messages: [`SERVER - ROUTES - UPDATE - Error occured attempting to update server.`, e]
+                messages: [`SERVER - ROUTES - UPDATE - Error occured checking for server updates.`, e]
             }
         }));
     }
