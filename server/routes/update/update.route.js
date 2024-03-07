@@ -33,6 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(require("child_process"));
 const path = __importStar(require("path"));
+const config_1 = __importDefault(require("../../config/config"));
 const crypto_1 = __importDefault(require("crypto"));
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,7 +97,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             // const status = await exec.spawn('sudo  sh iamzae-update.sh')
             //exec.spawn('cd .. && sudo sh iamzae-update.sh', { shell: true, detached: true, stdio: 'inherit' })
             try {
-                const parentDir = path.resolve(__dirname, '..');
+                const parentDir = path.resolve(config_1.default.ROOT_DIR, '..');
                 const child = exec.spawn('sudo', ['sh', 'iamzae-update.sh'], { detached: true, stdio: 'inherit', shell: true, cwd: parentDir });
                 child.unref();
                 return new Promise(res => res({
