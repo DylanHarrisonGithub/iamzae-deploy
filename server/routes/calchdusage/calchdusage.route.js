@@ -18,7 +18,8 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const rootSize = yield file_service_1.default.getDirectorySize('');
     const mediaSize = yield file_service_1.default.getDirectorySize('public/media');
     const tracksSize = yield file_service_1.default.getDirectorySize('public/tracks');
-    if (!(rootSize.success && rootSize.body && mediaSize.success && mediaSize.body && tracksSize.success && tracksSize.body)) {
+    //&& rootSize.body  && mediaSize.body  && tracksSize.body
+    if (!(rootSize.success && mediaSize.success && tracksSize.success)) {
         return new Promise(res => res({
             code: 500,
             json: {
