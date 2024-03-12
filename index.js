@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,6 +32,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const exec = __importStar(require("child_process"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
@@ -72,6 +92,17 @@ app.use(express_1.default.static(path_1.default.join(__dirname, 'client')));
 app.get('/*', (req, res) => res.sendFile(path_1.default.resolve(__dirname, './client', 'index.html')));
 app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
+    if (config_1.default.REPOSITORY.URL) {
+        try {
+            const res = exec.execSync(`sudo git remote set-url origin https://${config_1.default.REPOSITORY.PAT ?
+                config_1.default.REPOSITORY.PAT + '@'
+                :
+                    ''}${config_1.default.REPOSITORY.URL}`);
+        }
+        catch (e) {
+            console.log(['failed to set git remote url', e]);
+        }
+    }
     // full db delete
     // for (const key of Object.keys(server.models)) {
     //   console.log((await db.table.delete(key)).messages);

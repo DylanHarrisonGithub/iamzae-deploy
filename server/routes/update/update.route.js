@@ -94,10 +94,8 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }));
         }
         if (status.includes('Your branch is behind')) {
-            // const status = await exec.spawn('sudo  sh iamzae-update.sh')
-            //exec.spawn('cd .. && sudo sh iamzae-update.sh', { shell: true, detached: true, stdio: 'inherit' })
             try {
-                const parentDir = path.resolve(config_1.default.ROOT_DIR, '..');
+                const parentDir = path.resolve(config_1.default.ROOT_DIR); //this variable should be renamed rootDir
                 const child = exec.spawn('sudo', ['sh', 'iamzae-update.sh'], { detached: true, stdio: 'inherit', shell: true, cwd: parentDir });
                 child.unref();
                 return new Promise(res => res({
