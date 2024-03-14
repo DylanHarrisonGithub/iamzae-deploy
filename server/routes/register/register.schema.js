@@ -2,6 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const validation_service_1 = require("../../services/validation/validation.service");
 const registerSchema = {
+    admin: {
+        type: 'string',
+        attributes: {
+            required: true,
+            strLength: { minLength: 6 }
+        }
+    },
     username: {
         type: 'string',
         attributes: {
@@ -16,6 +23,13 @@ const registerSchema = {
             strLength: { minLength: 8 }
         }
     },
+    code: {
+        type: 'string',
+        attributes: {
+            required: true,
+            strLength: { minLength: 0, maxLength: 128 }
+        }
+    },
     avatar: {
         type: 'string',
         attributes: {
@@ -27,6 +41,6 @@ const registerSchema = {
         attributes: {
             required: false
         }
-    }
+    },
 };
 exports.default = registerSchema;

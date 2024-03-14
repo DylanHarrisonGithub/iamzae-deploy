@@ -79,7 +79,17 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
+    if (!config_1.default.REPOSITORY.URL) {
+        return new Promise(res => res({
+            code: 500,
+            json: {
+                success: false,
+                messages: [`SERVER - ROUTES - UPDATE - Server repository is not configured.`]
+            }
+        }));
+    }
     try {
+        const urlRes = exec.execSync(`sudo git remote set-url origin https://${config_1.default.REPOSITORY.PAT ? config_1.default.REPOSITORY.PAT + '@' : ''}${config_1.default.REPOSITORY.URL}`);
         const status = yield exec.execSync(`sudo git fetch && sudo git status`);
         if (status.includes('Your branch is up to date')) {
             return new Promise(res => res({

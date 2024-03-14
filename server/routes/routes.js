@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const userdelete_route_1 = __importDefault(require("./userdelete/userdelete.route"));
+const userdelete_schema_1 = __importDefault(require("./userdelete/userdelete.schema"));
 const update_route_1 = __importDefault(require("./update/update.route"));
 const update_schema_1 = __importDefault(require("./update/update.schema"));
 const shutdown_route_1 = __importDefault(require("./shutdown/shutdown.route"));
@@ -74,6 +76,13 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    userdelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: userdelete_schema_1.default,
+        route: userdelete_route_1.default
+    },
     update: {
         method: ['POST'],
         contentType: "application/json",

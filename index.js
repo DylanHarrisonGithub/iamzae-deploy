@@ -94,10 +94,7 @@ app.listen(process.env.PORT || 3000, () => __awaiter(void 0, void 0, void 0, fun
     console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
     if (config_1.default.REPOSITORY.URL) {
         try {
-            const res = exec.execSync(`sudo git remote set-url origin https://${config_1.default.REPOSITORY.PAT ?
-                config_1.default.REPOSITORY.PAT + '@'
-                :
-                    ''}${config_1.default.REPOSITORY.URL}`);
+            const res = exec.execSync(`sudo git remote set-url origin https://${config_1.default.REPOSITORY.PAT ? config_1.default.REPOSITORY.PAT + '@' : ''}${config_1.default.REPOSITORY.URL}`);
         }
         catch (e) {
             console.log(['failed to set git remote url', e]);
