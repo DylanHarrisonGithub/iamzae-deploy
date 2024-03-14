@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = __importDefault(require("pg"));
+const config_1 = __importDefault(require("../../config/config"));
 const quoteString = (val) => (typeof val === 'string') ? "'" + escape(val) + "'" : val;
 const escape = (v) => v.replace(/'/g, `''`);
 const unescape = (v) => v.replace(/''/g, `'`);
@@ -21,7 +22,7 @@ const db = (() => {
     const service = {
         row: {
             create: (table, row) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `INSERT INTO "${table}" (${Object.keys(row).map((key, index) => index !== Object.keys(row).length - 1 ? key + ', ' : key).join("")}) VALUES (${Object.keys(row).map((key, index) => index !== Object.keys(row).length - 1 ? quoteString(row[key]) + ', ' : quoteString(row[key])).join("")}) RETURNING *;`;
                 try {
                     yield client.connect();
@@ -48,7 +49,7 @@ const db = (() => {
                 }
             }),
             read: (table, where) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `SELECT * FROM "${table}"${(where && Object.keys(where).length) ?
                     ` WHERE ` +
                         Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
@@ -81,7 +82,7 @@ const db = (() => {
                 }
             }),
             stream: (table, afterID, numrows, where) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `SELECT * FROM "${table}" WHERE id > ${afterID}${(where && Object.keys(where).length) ?
                     ` AND ` +
                         Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
@@ -114,7 +115,7 @@ const db = (() => {
                 }
             }),
             update: (table, columns, where) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `UPDATE "${table}" SET ${Object.keys(columns).map((key, index) => index !== Object.keys(columns).length - 1 ?
                     key + ` = ` + quoteString(columns[key]) + `, `
                     :
@@ -159,7 +160,7 @@ const db = (() => {
                 }
             }),
             delete: (table, where) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `DELETE FROM "${table}"${(where && Object.keys(where).length) ?
                     ` WHERE ` +
                         Object.keys(where).map((key, index) => index !== Object.keys(where).length - 1 ?
@@ -191,7 +192,7 @@ const db = (() => {
                 }
             }),
             query: (query) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 try {
                     yield client.connect();
                     const result = unescapeRows((yield client.query(query)).rows);
@@ -218,7 +219,7 @@ const db = (() => {
         },
         table: {
             create: (table, columns) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `CREATE TABLE IF NOT EXISTS "${table}" (${Object.keys(columns).map((key, index) => `\n  ${key} ${columns[key]}`) // (index !== Object.keys(columns).length -1 ? ',' : '')}`)
                 }\n);`;
                 try {
@@ -246,7 +247,7 @@ const db = (() => {
                 }
             }),
             read: (table) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = table ?
                     `SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '${table}';`
                     :
@@ -283,7 +284,7 @@ const db = (() => {
                         messages: [`SERVER - DBService - Table - Update - Warning attempting to update table ${table}. No updates were provided.`]
                     };
                 }
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `ALTER TABLE "${table}"${Object.keys(updates.add || {}).map((column, i) => `\n  ADD "${column}" ${updates.add[column]}`)} ${(_a = updates.drop) === null || _a === void 0 ? void 0 : _a.map((column, i) => `\n  ADD DROP COLUMN "${column}"`)} ${Object.keys(updates.redefine || {}).map((column, i) => `\n  ALTER COLUMN "${column}" TYPE ${updates.redefine[column]}`)} ${Object.keys(updates.rename || {}).map((column, i) => `\n  RENAME COLUMN "${column}" TO ${updates.redefine[column]}`)};`;
                 try {
                     yield client.connect();
@@ -310,7 +311,7 @@ const db = (() => {
                 }
             }),
             delete: (table) => __awaiter(void 0, void 0, void 0, function* () {
-                const client = new pg_1.default.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+                const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
                 const query = `DROP TABLE "${table}";`;
                 try {
                     yield client.connect();
