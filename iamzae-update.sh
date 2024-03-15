@@ -7,5 +7,5 @@ cd ..
 cp -r public /home/iamdeejzae/iamzae-deploy
 sudo rm -rf public
 cd iamzae-deploy
-pm2 restart index.js
-pm2 save
+sudo pm2 restart index.js
+sudo pm2 save
