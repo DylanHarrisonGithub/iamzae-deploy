@@ -72,6 +72,7 @@ const uploadmedia_schema_1 = __importDefault(require("./uploadmedia/uploadmedia.
 const medialist_route_1 = __importDefault(require("./medialist/medialist.route"));
 const medialist_schema_1 = __importDefault(require("./medialist/medialist.schema"));
 const login_route_1 = __importDefault(require("./login/login.route"));
+const login_schema_1 = __importDefault(require("./login/login.schema"));
 const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
@@ -318,7 +319,7 @@ const routes = {
         method: ["POST"],
         contentType: "application/json",
         privilege: ['guest'],
-        schema: {},
+        schema: login_schema_1.default,
         route: login_route_1.default
     },
     register: {

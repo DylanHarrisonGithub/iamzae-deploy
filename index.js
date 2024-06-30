@@ -42,6 +42,8 @@ const server_1 = __importDefault(require("./server/server"));
 const db_service_1 = __importDefault(require("./server/services/db/db.service"));
 const config_1 = __importDefault(require("./server/config/config"));
 const file_service_1 = __importDefault(require("./server/services/file/file.service"));
+const crypto_1 = __importDefault(require("crypto"));
+const email_service_1 = __importDefault(require("./server/services/email/email.service"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ credentials: true }));
 app.use(express_1.default.json());
@@ -91,6 +93,7 @@ app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'publ
 app.use(express_1.default.static(path_1.default.join(__dirname, 'client')));
 app.get('/*', (req, res) => res.sendFile(path_1.default.resolve(__dirname, './client', 'index.html')));
 app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
     // full db delete
     // for (const key of Object.keys(server.models)) {
@@ -99,6 +102,39 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     // //!!!! uncomment before deploying !!!!
     for (const key of Object.keys(server_1.default.models)) {
         console.log((yield db_service_1.default.table.create(key, server_1.default.models[key])).messages);
+    }
+    // create a default admin user if none exist
+    const userRes = yield db_service_1.default.row.read('user');
+    if (!((_b = userRes.body) === null || _b === void 0 ? void 0 : _b.length)) {
+        const admin = {
+            username: 'admin' + Math.random().toString(36).slice(2),
+            email: config_1.default.ADMIN_EMAIL,
+            password: 'p' + Math.random().toString(36).slice(2),
+        };
+        const salt = crypto_1.default.randomBytes(32).toString('hex');
+        const hash = yield crypto_1.default.pbkdf2Sync(admin.password, salt, 32, 64, 'sha512').toString('hex');
+        const res = yield db_service_1.default.row.create('user', {
+            username: admin.username,
+            email: admin.email,
+            privilege: 'user',
+            password: hash,
+            salt: salt,
+            avatar: ``,
+            reset: ``,
+            resetstamp: `0`,
+            tries: 0
+        });
+        if (res.success) {
+            console.log('Temporary admin account created');
+            console.log(admin);
+            console.log('Please use this account to register a permanent admin account and then delete the temporary one.');
+            (0, email_service_1.default)(admin.email, 'Temporary Login', `${JSON.stringify(admin)}`);
+        }
+        else {
+            console.log('Error: Failed to create temporary admin account');
+            console.log('Failed attempt produced the following message(s)');
+            console.log(res.messages);
+        }
     }
     if (config_1.default.REPOSITORY.URL) {
         try {

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const loginSchema = {
-    email: {
+    username: {
         type: 'string',
         attributes: {
             required: true
