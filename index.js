@@ -146,6 +146,7 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     }
     console.log('root dir: ', config_1.default.ROOT_DIR);
     console.log('root size: ', yield file_service_1.default.getDirectorySize(''));
+    console.log('public url: ', process.env.PUBLIC_URL);
     console.log('db connection string: ' + config_1.default.DATABASE_URL);
     console.log('host: ' + os_1.default.hostname());
 }));

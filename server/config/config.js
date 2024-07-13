@@ -25,6 +25,7 @@ const config = {
     MAX_HD_SIZE_GB: process.env.IAMZAE_MAX_HD_SIZE_GB || 20,
     REPOSITORY: {
         URL: process.env.IAMZAE_REPO_URL,
+        BRANCH: process.env.IAMZAE_REPO_BRANCH || 'main',
         PAT: process.env.IAMZAE_REPO_PAT
     }
 };
