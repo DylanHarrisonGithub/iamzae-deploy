@@ -93,12 +93,11 @@ app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'publ
 app.use(express_1.default.static(path_1.default.join(__dirname, 'client')));
 app.get('/*', (req, res) => res.sendFile(path_1.default.resolve(__dirname, './client', 'index.html')));
 app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
     // full db delete
     // for (const key of Object.keys(server.models)) {
     //   console.log((await db.table.delete(key)).messages);
     // }
+    var _b;
     // //!!!! uncomment before deploying !!!!
     for (const key of Object.keys(server_1.default.models)) {
         console.log((yield db_service_1.default.table.create(key, server_1.default.models[key])).messages);
@@ -146,7 +145,7 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     }
     console.log('root dir: ', config_1.default.ROOT_DIR);
     console.log('root size: ', yield file_service_1.default.getDirectorySize(''));
-    console.log('public url: ', process.env.PUBLIC_URL);
     console.log('db connection string: ' + config_1.default.DATABASE_URL);
     console.log('host: ' + os_1.default.hostname());
+    console.log(`${config_1.default.APPNAME} listening on port ${config_1.default.PORT || 3000}`);
 }));
