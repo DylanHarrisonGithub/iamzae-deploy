@@ -3,6 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const themedelete_route_1 = __importDefault(require("./themedelete/themedelete.route"));
+const themedelete_schema_1 = __importDefault(require("./themedelete/themedelete.schema"));
+const themecreate_route_1 = __importDefault(require("./themecreate/themecreate.route"));
+const themecreate_schema_1 = __importDefault(require("./themecreate/themecreate.schema"));
+const theme_route_1 = __importDefault(require("./theme/theme.route"));
+const theme_schema_1 = __importDefault(require("./theme/theme.schema"));
 const userdelete_route_1 = __importDefault(require("./userdelete/userdelete.route"));
 const userdelete_schema_1 = __importDefault(require("./userdelete/userdelete.schema"));
 const update_route_1 = __importDefault(require("./update/update.route"));
@@ -77,6 +83,27 @@ const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    themedelete: {
+        method: ['DELETE'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: themedelete_schema_1.default,
+        route: themedelete_route_1.default
+    },
+    themecreate: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: themecreate_schema_1.default,
+        route: themecreate_route_1.default
+    },
+    theme: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['guest'],
+        schema: theme_schema_1.default,
+        route: theme_route_1.default
+    },
     userdelete: {
         method: ['DELETE'],
         contentType: "application/json",

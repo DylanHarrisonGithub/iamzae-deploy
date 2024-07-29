@@ -27,6 +27,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -99,8 +110,25 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     // }
     var _b;
     // //!!!! uncomment before deploying !!!!
+    // create db tables if they don't already exist
     for (const key of Object.keys(server_1.default.models)) {
         console.log((yield db_service_1.default.table.create(key, server_1.default.models[key])).messages);
+    }
+    // add any missing columns to tables
+    let dbtable;
+    for (const key of Object.keys(server_1.default.models)) {
+        dbtable = (yield db_service_1.default.table.read(key)).body;
+        if (dbtable) {
+            let _c = server_1.default.models[key], { PRIMARY } = _c, tabledef = __rest(_c, ["PRIMARY"]);
+            for (const tdcolumn of Object.keys(tabledef)) {
+                if (!dbtable.filter(dbv => dbv.column_name.toLowerCase() === tdcolumn.toLowerCase()).length) {
+                    console.log(`Warning: database definition for table ${key} is missing column ${tdcolumn} as defined by this application for ${key} table!`);
+                    console.log(`Adding column ${tdcolumn} to table ${key} as defined by this application..`);
+                    let res = yield db_service_1.default.table.update(key, { add: { [tdcolumn]: tabledef[tdcolumn] } });
+                    console.log('here is the result of that..', res.messages);
+                }
+            }
+        }
     }
     // create a default admin user if none exist
     const userRes = yield db_service_1.default.row.read('user');

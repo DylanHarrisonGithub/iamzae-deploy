@@ -285,7 +285,7 @@ const db = (() => {
                     };
                 }
                 const client = new pg_1.default.Client({ connectionString: config_1.default.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-                const query = `ALTER TABLE "${table}"${Object.keys(updates.add || {}).map((column, i) => `\n  ADD "${column}" ${updates.add[column]}`)} ${(_a = updates.drop) === null || _a === void 0 ? void 0 : _a.map((column, i) => `\n  ADD DROP COLUMN "${column}"`)} ${Object.keys(updates.redefine || {}).map((column, i) => `\n  ALTER COLUMN "${column}" TYPE ${updates.redefine[column]}`)} ${Object.keys(updates.rename || {}).map((column, i) => `\n  RENAME COLUMN "${column}" TO ${updates.redefine[column]}`)};`;
+                const query = `ALTER TABLE "${table}"${Object.keys(updates.add || {}).map((column, i) => `\n  ADD "${column}" ${updates.add[column]}`)} ${((_a = updates.drop) === null || _a === void 0 ? void 0 : _a.map((column, i) => `\n  ADD DROP COLUMN "${column}"`)) || ""} ${Object.keys(updates.redefine || {}).map((column, i) => `\n  ALTER COLUMN "${column}" TYPE ${updates.redefine[column]}`)} ${Object.keys(updates.rename || {}).map((column, i) => `\n  RENAME COLUMN "${column}" TO ${updates.redefine[column]}`)};`;
                 try {
                     yield client.connect();
                     const result = (yield client.query(query)).rows;
