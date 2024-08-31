@@ -30,9 +30,9 @@ exports.timeData = {
 const { periods, weekdays, months, daysPerMonth, years, dates, times } = exports.timeData;
 exports.defaultTheme = {
     id: -1,
-    herotext: `Get ready for ZAE – the driving force behind unforgettable house music moments. With an unparalleled ability to fuse tradition and innovation, ZAE commands dancefloors, creating a rhythmic unity that transcends. From underground vibes to festival`,
-    herovideo: `static/IMG_0358.mp4`,
-    heroimage: `static/IMG_0360_100.jpg`,
+    herotext: `Get ready for ZAE – the driving force behind unforgettable house music moments. With an unparalleled ability to fuse tradition and innovation, ZAE commands dancefloors, creating a rhythmic unity that transcends. From underground vibes to festival stages, experience the pulse of ZAE's curated sonic journey that redefines house music, one set at a time.`,
+    herovideo: `IMG_0358.mp4`,
+    heroimage: `IMG_0360_100.jpg`,
     threecard1title: `Great Atmosphere`,
     threecard1image: `IMG_4329.JPG`,
     threecard1text: `ZAE, a master of house music, skillfully crafts mesmerizing atmospheres in any venue. Through seamless track blending and flawless transitions, ZAE turns ordinary spaces into pulsating realms of sonic bliss. With an intuitive grasp of the crowd's energy, ZAE curates a musical journey that elevates the atmosphere, transforming the dance floor into a unique celebration of rhythm and sound.`,
@@ -65,7 +65,7 @@ exports.themeSchema = {
     threecard3title: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     threecard3image: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     threecard3text: { type: 'string', attributes: { required: true, strLength: { maxLength: 2048 } } },
-    about: { type: 'string', attributes: { required: true, strLength: { maxLength: 2048 } } },
+    about: { type: 'string', attributes: { required: true, strLength: { maxLength: 4096 } } },
     card1color: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     card2color: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     font: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },

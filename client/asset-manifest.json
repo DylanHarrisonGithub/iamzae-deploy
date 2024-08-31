@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/iamzae/static/css/main.76b9e8e9.css",
-    "main.js": "/iamzae/static/js/main.4606f617.js",
+    "main.css": "/iamzae/static/css/main.b395c0db.css",
+    "main.js": "/iamzae/static/js/main.7f88d97d.js",
     "static/js/787.c4e7f8f9.chunk.js": "/iamzae/static/js/787.c4e7f8f9.chunk.js",
     "static/media/Vogue.ttf": "/iamzae/static/media/Vogue.cc23cdc2582e9de16b77.ttf",
     "index.html": "/iamzae/index.html",
-    "main.76b9e8e9.css.map": "/iamzae/static/css/main.76b9e8e9.css.map",
-    "main.4606f617.js.map": "/iamzae/static/js/main.4606f617.js.map",
+    "main.b395c0db.css.map": "/iamzae/static/css/main.b395c0db.css.map",
+    "main.7f88d97d.js.map": "/iamzae/static/js/main.7f88d97d.js.map",
     "787.c4e7f8f9.chunk.js.map": "/iamzae/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.76b9e8e9.css",
-    "static/js/main.4606f617.js"
+    "static/css/main.b395c0db.css",
+    "static/js/main.7f88d97d.js"
   ]
 }
