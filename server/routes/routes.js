@@ -324,14 +324,14 @@ const routes = {
     deletemedia: {
         method: ['DELETE'],
         contentType: "application/json",
-        privilege: ['user'],
+        privilege: ['user'], //(config.ENVIRONMENT === 'DEVELOPMENT') ? ['guest', 'admin'] : ['admin'],
         schema: deletemedia_schema_1.default,
         route: deletemedia_route_1.default
     },
     uploadmedia: {
         method: ['POST'],
         contentType: "application/json",
-        privilege: ['user'],
+        privilege: ['user'], //(config.ENVIRONMENT === 'DEVELOPMENT') ? ['guest', 'admin'] : ['admin'],
         schema: uploadmedia_schema_1.default,
         route: uploadmedia_route_1.default
     },

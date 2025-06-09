@@ -39,7 +39,7 @@ const requestParser = (() => {
                 ip: ip,
                 timestamp: Date.now(),
                 method: req.method,
-                accepts: req.get('Accept') || '',
+                accepts: req.get('Accept') || '', //req.get('Accept')?.split(',').map(type => type.indexOf(';') > -1 ? type.substring(0, type.lastIndexOf(';')).split('/') : type.split('/') ) || [],
                 route: route,
                 host: req.get('Host') || '',
                 token: token,

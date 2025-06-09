@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -108,7 +112,7 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     // for (const key of Object.keys(server.models)) {
     //   console.log((await db.table.delete(key)).messages);
     // }
-    var _b;
+    var _a;
     // //!!!! uncomment before deploying !!!!
     // create db tables if they don't already exist
     for (const key of Object.keys(server_1.default.models)) {
@@ -119,7 +123,7 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     for (const key of Object.keys(server_1.default.models)) {
         dbtable = (yield db_service_1.default.table.read(key)).body;
         if (dbtable) {
-            let _c = server_1.default.models[key], { PRIMARY } = _c, tabledef = __rest(_c, ["PRIMARY"]);
+            let _b = server_1.default.models[key], { PRIMARY } = _b, tabledef = __rest(_b, ["PRIMARY"]);
             for (const tdcolumn of Object.keys(tabledef)) {
                 if (!dbtable.filter(dbv => dbv.column_name.toLowerCase() === tdcolumn.toLowerCase()).length) {
                     console.log(`Warning: database definition for table ${key} is missing column ${tdcolumn} as defined by this application for ${key} table!`);
@@ -132,7 +136,7 @@ app.listen(config_1.default.PORT || 3000, () => __awaiter(void 0, void 0, void 0
     }
     // create a default admin user if none exist
     const userRes = yield db_service_1.default.row.read('user');
-    if (!((_b = userRes.body) === null || _b === void 0 ? void 0 : _b.length)) {
+    if (!((_a = userRes.body) === null || _a === void 0 ? void 0 : _a.length)) {
         const admin = {
             username: 'admin' + Math.random().toString(36).slice(2),
             email: config_1.default.ADMIN_EMAIL,
