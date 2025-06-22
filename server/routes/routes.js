@@ -81,8 +81,26 @@ const login_route_1 = __importDefault(require("./login/login.route"));
 const login_schema_1 = __importDefault(require("./login/login.schema"));
 const register_route_1 = __importDefault(require("./register/register.route"));
 const register_schema_1 = __importDefault(require("./register/register.schema"));
+const getdirectory_route_1 = __importDefault(require("./getdirectory/getdirectory.route"));
+const getdirectory_schema_1 = __importDefault(require("./getdirectory/getdirectory.schema"));
+const createdirectory_route_1 = __importDefault(require("./createdirectory/createdirectory.route"));
+const createdirectory_schema_1 = __importDefault(require("./createdirectory/createdirectory.schema"));
 const config_1 = __importDefault(require("../config/config"));
 const routes = {
+    createdirectory: {
+        method: ['POST'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: createdirectory_schema_1.default,
+        route: createdirectory_route_1.default
+    },
+    getdirectory: {
+        method: ['GET'],
+        contentType: "application/json",
+        privilege: ['user'],
+        schema: getdirectory_schema_1.default,
+        route: getdirectory_route_1.default
+    },
     themedelete: {
         method: ['DELETE'],
         contentType: "application/json",

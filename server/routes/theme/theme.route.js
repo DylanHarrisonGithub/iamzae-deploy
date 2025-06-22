@@ -16,7 +16,7 @@ const models_1 = require("../../models/models");
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield db_service_1.default.row.read('theme');
-    console.log('theme rout reaced');
+    // console.log('theme rout reached')
     return new Promise(resolve => {
         var _a;
         return resolve({
