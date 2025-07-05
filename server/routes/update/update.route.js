@@ -110,7 +110,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
         if (status.includes('Your branch is behind')) {
             try {
                 const rDir = path.resolve(config_1.default.ROOT_DIR);
-                const child = exec.spawn('sudo', ['sh', 'iamzae-update.sh'], { detached: true, stdio: 'inherit', shell: true, cwd: rDir });
+                const child = exec.spawn('sudo', ['sh', 'update.sh'], { detached: true, stdio: 'inherit', shell: true, cwd: rDir });
                 child.unref();
                 return new Promise(res => res({
                     code: 200,
