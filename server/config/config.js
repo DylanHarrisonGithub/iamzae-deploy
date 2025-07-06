@@ -27,6 +27,12 @@ const config = {
         URL: process.env.IAMZAE_REPO_URL,
         BRANCH: process.env.IAMZAE_REPO_BRANCH || 'main',
         PAT: process.env.IAMZAE_REPO_PAT
-    }
+    },
+    PROTECTED_FOLDERS: [
+        'public',
+        'public/media',
+        'public/tracks',
+        'public/static',
+    ]
 };
 exports.default = config;

@@ -1,3 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {};
+// PATH: /^(\/?[\w.-]+(?:\/[\w.-]*)*\/?)$/,
+exports.default = {
+    path: { type: /^(\/?[\w.-]+(?:\/[\w.-]*)*\/?)$/, attributes: { required: false } }
+};

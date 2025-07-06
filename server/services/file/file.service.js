@@ -120,6 +120,16 @@ const file = (() => {
             }
         }),
         delete: (filepath) => __awaiter(void 0, void 0, void 0, function* () {
+            // console.log('delete filepath: ', filepath);
+            if (config_1.default.PROTECTED_FOLDERS.includes(filepath)) {
+                return {
+                    success: false,
+                    messages: [
+                        `Server - Services - File - Delete: Error deleting ${filepath}.`,
+                        `Server - Services - File - Delete: ${filepath} is a protected folder and cannot be deleted.`
+                    ]
+                };
+            }
             try {
                 // await fs.unlink(config.ROOT_DIR + filepath);
                 yield fs_1.promises.rm(Path.normalize(config_1.default.ROOT_DIR + filepath), { recursive: true, force: true });
@@ -246,6 +256,16 @@ const file = (() => {
             }
         }),
         deleteDirectory: (path) => __awaiter(void 0, void 0, void 0, function* () {
+            // console.log('delete filepath: ', path);
+            if (config_1.default.PROTECTED_FOLDERS.includes(path)) {
+                return {
+                    success: false,
+                    messages: [
+                        `Server - Services - File - Delete: Error deleting ${path}.`,
+                        `Server - Services - File - Delete: ${path} is a protected folder and cannot be deleted.`
+                    ]
+                };
+            }
             try {
                 yield fs_1.promises.rmdir(config_1.default.ROOT_DIR + path, { recursive: true });
                 return {

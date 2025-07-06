@@ -14,9 +14,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const file_service_1 = __importDefault(require("../../services/file/file.service"));
-const models_1 = require("../../models/models");
 const config_1 = __importDefault(require("../../config/config"));
+const acceptedMediaExtensions = {
+    font: ['.woff2', '.woff', '.ttf', '.otf'],
+    image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
+    video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
+    audio: ['.mp3', '.wav', '.ogg']
+};
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('path received:', request.params.path);
+    let destPath = request.params.path === undefined ? '' : request.params.path;
+    destPath = destPath.replace(/^\/+/, '');
+    if (destPath.length)
+        destPath = destPath.endsWith('/') ? destPath : destPath + '/';
+    console.log('destPath:', destPath);
     const filename = Object.keys(request.files)[0];
     if (!filename) {
         return new Promise(res => res({
@@ -30,8 +41,10 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
-    if (!(models_1.acceptedMediaExtensions.image.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
-        models_1.acceptedMediaExtensions.video.filter(accepted => filename.toLowerCase().endsWith(accepted)).length)) {
+    if (!(acceptedMediaExtensions.font.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
+        acceptedMediaExtensions.image.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
+        acceptedMediaExtensions.video.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
+        acceptedMediaExtensions.audio.filter(accepted => filename.toLowerCase().endsWith(accepted)).length)) {
         return new Promise(res => res({
             code: 400,
             json: {
@@ -44,8 +57,10 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
+    const dest = destPath ? 'public/' + destPath : 'public/';
+    yield file_service_1.default.createDirectory(dest);
     const uploadRes = yield (new Promise((uRes) => {
-        request.files[Object.keys(request.files)[0]].mv(path_1.default.normalize(config_1.default.ROOT_DIR + '/public/media/') + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
+        request.files[Object.keys(request.files)[0]].mv(path_1.default.normalize(config_1.default.ROOT_DIR + dest) + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
             if (err) {
                 uRes({
                     success: false,
@@ -69,7 +84,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
-    const fRead = yield file_service_1.default.readDirectory('public/media');
+    const fRead = yield file_service_1.default.readDirectory(dest);
     if (!fRead.success) {
         return new Promise(res => res({
             code: 207,

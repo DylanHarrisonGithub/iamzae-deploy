@@ -64,6 +64,10 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
                         success = false;
                     }
                 }
+                else {
+                    msgs = [...msgs, `SERVER - ROUTES - DELETEMEDIA - Media file ${fn} could not be deleted. Invalid filename.`];
+                    success = false;
+                }
             }
             return new Promise(res => res({
                 code: success ? 200 : 400,
