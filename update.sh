@@ -10,17 +10,26 @@ public_backup="$parent_dir/public"
 update_script="$current_dir/update.sh"
 index_file="$current_dir/index.js"
 
+# Ensure folder ownership is correct
+echo "Ensuring folder ownership is correct..."
+sudo chown -R root:root .
+
 # Step 1: Backup 'public' folder to parent directory
 sudo cp -r "$current_dir/public" "$public_backup"
 echo "Backed up 'public' folder to parent directory."
 
 # Step 2: Run sudo git pull
-echo "Running 'sudo git pull'..."
-sudo git pull
+echo "Updating from repository..."
+sudo git fetch origin
+sudo git reset --hard origin/main
+# Check if git pull was successful
 if [ $? -ne 0 ]; then
   echo "git pull failed. Exiting."
   exit 1
 fi
+# Clean untracked files and directories
+echo "Cleaning untracked files and directories..."
+sudo git clean -fd
 
 # Step 3: Run sudo npm install
 echo "Running 'sudo npm install'..."
@@ -40,7 +49,7 @@ fi
 
 # Step 5: Restore 'public' folder from backup
 sudo rm -rf "$current_dir/public"
-sudo cp -r "$public_backup" "$current_dir/public"
+sudo cp -r "$public_backup" "$current_dir"
 echo "Restored 'public' folder to current directory."
 
 # Step 6: Delete backup

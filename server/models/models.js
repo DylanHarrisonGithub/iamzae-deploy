@@ -31,16 +31,16 @@ const { periods, weekdays, months, daysPerMonth, years, dates, times } = exports
 exports.defaultTheme = {
     id: -1,
     herotext: `Get ready for ZAE – the driving force behind unforgettable house music moments. With an unparalleled ability to fuse tradition and innovation, ZAE commands dancefloors, creating a rhythmic unity that transcends. From underground vibes to festival stages, experience the pulse of ZAE's curated sonic journey that redefines house music, one set at a time.`,
-    herovideo: `IMG_0358.mp4`,
-    heroimage: `IMG_0360_100.jpg`,
+    herovideo: `media/IMG_0358.mp4`,
+    heroimage: `media/IMG_0360_100.jpg`,
     threecard1title: `Great Atmosphere`,
-    threecard1image: `IMG_4329.JPG`,
+    threecard1image: `media/IMG_4329.JPG`,
     threecard1text: `ZAE, a master of house music, skillfully crafts mesmerizing atmospheres in any venue. Through seamless track blending and flawless transitions, ZAE turns ordinary spaces into pulsating realms of sonic bliss. With an intuitive grasp of the crowd's energy, ZAE curates a musical journey that elevates the atmosphere, transforming the dance floor into a unique celebration of rhythm and sound.`,
     threecard2title: `Great Music`,
-    threecard2image: `IMG_4315.JPG`,
+    threecard2image: `media/IMG_4315.JPG`,
     threecard2text: `Renowned for their expertise in house music, ZAE showcases a remarkable talent for curating unforgettable atmospheres through an expertly crafted playlist. Each track is thoughtfully selected, creating a seamless blend that transforms any venue into a pulsating realm of sonic bliss. With an intuitive understanding of the crowd's vibe, ZAE's curated musical journey elevates the atmosphere, turning the dance floor into a distinctive celebration of rhythm and sound.`,
     threecard3title: `Great Crowds`,
-    threecard3image: `crowd2.jpg`,
+    threecard3image: `media/crowd2.jpg`,
     threecard3text: `ZAE's magnetic music draws a sizable, energetic crowd to the dance floor, creating an inclusive atmosphere where attendees feel intimately connected to the beats. The lively tapestry of movement unfolds as ZAE skillfully engages the crowd, turning each event into a dynamic celebration where the music acts as a unifying force, transcending boundaries and inviting everyone to revel in the collective joy of the moment.`,
     about: `    In the heart of Milwaukee's vibrant music scene, I found my calling and passion as a house music DJ. Growing up surrounded by the rhythm of the city, I was captivated by the pulsating beats that echoed through the streets. From the moment I first stepped into a dimly lit nightclub and felt the music reverberate through my soul, I knew I had discovered my truest form of expression.
     My journey into the world of DJing started in the most unexpected way. As a teenager, I would spend hours exploring record stores, searching for that perfect beat that would ignite the dance floor. With each vinyl I collected, I honed my skills, learning the art of blending tracks seamlessly. The turntables became an extension of myself, allowing me to communicate my emotions and energy to the crowd.
