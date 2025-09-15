@@ -19,95 +19,80 @@ const acceptedMediaExtensions = {
     font: ['.woff2', '.woff', '.ttf', '.otf'],
     image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
     video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
-    audio: ['.mp3', '.wav', '.ogg']
+    audio: ['.mp3', '.wav', '.ogg'],
+    document: ['.pdf', '.docx', '.txt', '.xlsx', '.pptx'],
+    style: ['.css'],
+    // archive: ['.zip', '.rar', '.tar', '.gz'],
+    // code: ['.js', '.ts', '.jsx', '.tsx', '.html', '.css', '.scss', '.json'],
+    // other: ['.md', '.yaml', '.xml', '.csv', '.log']
 };
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('path received:', request.params.path);
+    // console.log('path received:', request.params.path);
     let destPath = request.params.path === undefined ? '' : request.params.path;
     destPath = destPath.replace(/^\/+/, '');
     if (destPath.length)
         destPath = destPath.endsWith('/') ? destPath : destPath + '/';
-    console.log('destPath:', destPath);
-    const filename = Object.keys(request.files)[0];
-    if (!filename) {
-        return new Promise(res => res({
-            code: 400,
-            json: {
-                success: false,
-                messages: [
-                    "SERVER - ROUTES - UPLOADMEDIA - Failed to upload file.",
-                    "SERVER - ROUTES - UPLOADMEDIA - No file was received."
-                ]
-            }
-        }));
-    }
-    if (!(acceptedMediaExtensions.font.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
-        acceptedMediaExtensions.image.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
-        acceptedMediaExtensions.video.filter(accepted => filename.toLowerCase().endsWith(accepted)).length ||
-        acceptedMediaExtensions.audio.filter(accepted => filename.toLowerCase().endsWith(accepted)).length)) {
-        return new Promise(res => res({
-            code: 400,
-            json: {
-                success: false,
-                messages: [
-                    "SERVER - ROUTES - UPLOADMEDIA - Failed to upload file.",
-                    "SERVER - ROUTES - UPLOADMEDIA - File type not allowed.",
-                    //`SERVER - ROUTES - UPLOADMEDIA - Allowed file extensions: ${acceptedMediaExtensions.image + ", " + acceptedMediaExtensions.video}.`,
-                ]
-            }
-        }));
-    }
+    // console.log('destPath:', destPath);
+    // const filename = Object.keys(request.files)[0];
     const dest = destPath ? 'public/' + destPath : 'public/';
-    yield file_service_1.default.createDirectory(dest);
-    const uploadRes = yield (new Promise((uRes) => {
-        request.files[Object.keys(request.files)[0]].mv(path_1.default.normalize(config_1.default.ROOT_DIR + dest) + Object.keys(request.files)[0], (err) => __awaiter(void 0, void 0, void 0, function* () {
-            if (err) {
-                uRes({
-                    success: false,
-                    messages: ["SERVER - ROUTES - UPLOADMEDIA - Failed to upload file."].concat(err.toString())
-                });
-            }
-            else {
-                uRes({
-                    success: true,
-                    messages: ["SERVER - ROUTES - UPLOADMEDIA - File uploaded successfully."]
-                });
-            }
-        }));
-    }));
-    if (!uploadRes.success) {
+    // console.log('files to upload:', request.files);
+    if (!Object.keys(request.files || {}).length) {
         return new Promise(res => res({
-            code: 500,
+            code: 400,
             json: {
                 success: false,
-                messages: uploadRes.messages
+                messages: [
+                    "SERVER - ROUTES - UPLOADMEDIA - Failed to upload file(s).",
+                    "SERVER - ROUTES - UPLOADMEDIA - No files were received."
+                ]
             }
         }));
+    }
+    yield file_service_1.default.createDirectory(dest);
+    let success = true;
+    let messages = [];
+    for (const fKey of Object.keys(request.files)) {
+        const fileItem = request.files[fKey];
+        if (!Object.values(acceptedMediaExtensions).flatMap(ext => ext).some(accepted => fKey.toLowerCase().endsWith(accepted))) {
+            success = false;
+            messages.push(`SERVER - ROUTES - UPLOADMEDIA - Failed to upload file ${fKey}. file type prohibited.`);
+            continue;
+        }
+        const uploadRes = yield (new Promise((uRes) => {
+            fileItem.mv(path_1.default.normalize(config_1.default.ROOT_DIR + dest) + fKey, (err) => __awaiter(void 0, void 0, void 0, function* () {
+                if (err) {
+                    uRes({
+                        success: false,
+                        messages: [`SERVER - ROUTES - UPLOADMEDIA - Failed to upload file ${fKey}.`].concat(err.toString())
+                    });
+                }
+                else {
+                    uRes({
+                        success: true,
+                        messages: [`SERVER - ROUTES - UPLOADMEDIA - File ${fKey} uploaded successfully.`]
+                    });
+                }
+            }));
+        }));
+        if (!uploadRes.success) {
+            success = false;
+        }
+        messages = messages.concat(uploadRes.messages);
     }
     const fRead = yield file_service_1.default.readDirectory(dest);
-    if (!fRead.success) {
-        return new Promise(res => res({
-            code: 207,
+    success = success && fRead.success;
+    messages = messages.concat(fRead.messages);
+    return new Promise((res) => __awaiter(void 0, void 0, void 0, function* () {
+        return res({
+            code: success ? 200 : 500,
             json: {
-                success: true,
+                success: success,
                 messages: [
-                    "SERVER - ROUTES - UPLOADMEDIA - Media successfully uploaded!",
-                    `Server - Routes - UPLOADMEDIA - Failed to load media list.`,
-                    ...fRead.messages
+                    "SERVER - ROUTES - UPLOADMEDIA - File(s) upload process completed.",
+                    ...messages
                 ],
-                body: []
+                body: fRead.body || []
             }
-        }));
-    }
-    return new Promise(res => res({
-        code: 200,
-        json: {
-            success: true,
-            messages: [
-                "SERVER - ROUTES - UPLOADMEDIA - Media successfully uploaded!",
-                "SERVER - ROUTES - UPLOADMEDIA - Successfully loaded media list!"
-            ],
-            body: fRead.body
-        }
+        });
     }));
 });

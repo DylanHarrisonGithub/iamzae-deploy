@@ -68,7 +68,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }));
     }
-    const fRead = yield file_service_1.default.readDirectory('public/track');
+    const fRead = yield file_service_1.default.readDirectory('public/tracks');
     if (!fRead.success) {
         return new Promise(res => res({
             code: 207,
