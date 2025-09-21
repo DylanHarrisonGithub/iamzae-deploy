@@ -34,6 +34,17 @@ const config = {
         'public/media',
         'public/tracks',
         'public/static',
-    ]
+    ],
+    ACCEPTED_MEDIA_EXTENSIONS: {
+        audio: ['.mp3', '.wav', '.ogg', '.m4a', '.flac', '.aac', '.wma', '.alac', '.aiff'],
+        video: ['.mp4', '.mov', '.wmv', '.avi', '.mkv', '.flv', '.webm', '.avchd'],
+        image: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg', '.webp'],
+        font: ['.ttf', '.otf', '.woff', '.woff2', '.eot'],
+        document: ['.pdf', '.docx', '.doc', '.txt', '.xlsx', '.xls', '.pptx', '.ppt'],
+        style: ['.css', '.scss', '.sass', '.less'],
+        // archive: ['.zip', '.rar', '.tar', '.gz'],
+        // code: ['.js', '.ts', '.jsx', '.tsx', '.html', '.css', '.scss', '.json'],
+        // other: ['.md', '.yaml', '.xml', '.csv', '.log']
+    }
 };
 exports.default = config;

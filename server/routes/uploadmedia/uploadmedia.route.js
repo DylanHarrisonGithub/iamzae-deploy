@@ -15,17 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const file_service_1 = __importDefault(require("../../services/file/file.service"));
 const config_1 = __importDefault(require("../../config/config"));
-const acceptedMediaExtensions = {
-    font: ['.woff2', '.woff', '.ttf', '.otf'],
-    image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
-    video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
-    audio: ['.mp3', '.wav', '.ogg'],
-    document: ['.pdf', '.docx', '.txt', '.xlsx', '.pptx'],
-    style: ['.css'],
-    // archive: ['.zip', '.rar', '.tar', '.gz'],
-    // code: ['.js', '.ts', '.jsx', '.tsx', '.html', '.css', '.scss', '.json'],
-    // other: ['.md', '.yaml', '.xml', '.csv', '.log']
-};
+// const acceptedMediaExtensions = {
+//   font: ['.woff2', '.woff', '.ttf', '.otf'],
+//   image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
+//   video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
+//   audio: ['.mp3', '.wav', '.ogg'],
+//   document: ['.pdf', '.docx', '.txt', '.xlsx', '.pptx'],
+//   style: ['.css'],
+//   // archive: ['.zip', '.rar', '.tar', '.gz'],
+//   // code: ['.js', '.ts', '.jsx', '.tsx', '.html', '.css', '.scss', '.json'],
+//   // other: ['.md', '.yaml', '.xml', '.csv', '.log']
+// };
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log('path received:', request.params.path);
     let destPath = request.params.path === undefined ? '' : request.params.path;
@@ -53,7 +53,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     let messages = [];
     for (const fKey of Object.keys(request.files)) {
         const fileItem = request.files[fKey];
-        if (!Object.values(acceptedMediaExtensions).flatMap(ext => ext).some(accepted => fKey.toLowerCase().endsWith(accepted))) {
+        if (!Object.values(config_1.default.ACCEPTED_MEDIA_EXTENSIONS).flatMap(ext => ext).some(accepted => fKey.toLowerCase().endsWith(accepted))) {
             success = false;
             messages.push(`SERVER - ROUTES - UPLOADMEDIA - Failed to upload file ${fKey}. file type prohibited.`);
             continue;

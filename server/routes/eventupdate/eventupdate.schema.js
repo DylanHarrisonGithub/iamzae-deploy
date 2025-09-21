@@ -6,9 +6,9 @@ const eventUpdateSchema = {
     id: { type: 'string | number', attributes: { required: true, range: { min: 0 } } },
     update: {
         type: {
-            day: { type: 'number', attributes: { required: false, range: { min: 1, max: 31 } } },
+            day: { type: 'string | number', attributes: { required: false, range: { min: 1, max: 31 } } },
             month: { type: [...months], attributes: { required: false } },
-            year: { type: 'number', attributes: { required: false, range: { min: 2020, max: 2120 } } },
+            year: { type: 'string | number', attributes: { required: false, range: { min: 2020, max: 2120 } } },
             time: { type: [...times], attributes: { required: false } },
             location: { type: 'string', attributes: { required: false } },
             thumbnail: { type: 'string', attributes: { required: false } },

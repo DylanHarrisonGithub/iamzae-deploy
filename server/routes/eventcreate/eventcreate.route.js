@@ -42,6 +42,7 @@ function getNthDayInMonth(nth, day, month, year) {
 }
 ;
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('SERVER - ROUTES - EVENTCREATE - New event request received:', request.params);
     const _a = request.params, { ['id']: dropped, ['media']: media } = _a, event = __rest(_a, ['id', 'media']);
     event['media'] = (media === null || media === void 0 ? void 0 : media.join(',')) || ''; // annoying
     event.timestamp = Date.now();
