@@ -93,7 +93,7 @@ exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
                 });
                 mailres.body.forEach(m => {
                     if (m.verified === 'true') {
-                        (0, email_service_1.default)(m.email, 'iamzae.com new event scheduled', undefined, template);
+                        (0, email_service_1.default)(m.email, 'DJ ZAE New event scheduled', undefined, template);
                     }
                 });
             }

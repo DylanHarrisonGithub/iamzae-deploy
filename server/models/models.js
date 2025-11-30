@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.themeSchema = exports.defaultTheme = exports.timeData = exports.acceptedMediaExtensions = void 0;
+exports.deepMergeWithDefaults = deepMergeWithDefaults;
 exports.acceptedMediaExtensions = {
     image: ['.gif', '.jpg', '.jpeg', '.png', '.heic'],
     video: ['.mov', '.mp4', '.mpeg', '.webm', '.ogg'],
@@ -50,6 +51,32 @@ exports.defaultTheme = {
     card1color: `bg-gradient-to-br from-pink-200 via-pink-300 to-pink-200`,
     card2color: `bg-gradient-to-br from-indigo-200 via-purple-300 to-indigo-200`,
     font: `../public//fonts/Vogue.ttf`,
+    cards: {
+        primary: `rounded-lg bg-gradient-to-br from-pink-200 via-pink-300 to-pink-200`, //`backdrop-blur-2xl`,
+        secondary: `bg-gradient-to-br from-indigo-200 via-purple-300 to-indigo-200`, //`backdrop-blur-2xl bg-opacity-25 bg-blue-400`,
+        tertiary: 'bg-slate-700 box-shadow-lg text-white border-2 border-slate-600',
+    },
+    forms: {
+        primary: `bg-blue-500 bg-opacity-50 text-white shadow-sm`,
+        secondary: `bg-slate-500 bg-opacity-50 text-white shadow-sm`,
+        tertiary: `bg-pink-500 bg-opacity-50 text-white shadow-sm border-b-2 border-pink-600`,
+    },
+    buttons: {
+        primary: `bg-slate-700 rounded-none`,
+        secondary: `bg-blue-400 rounded-none`,
+        tertiary: `rounded-sm bg-slate-100 bg-opacity-90 text-slate-400`
+    },
+    fonts: {
+        primary: {
+            family: 'Andale Mono'
+        },
+        secondary: {
+            family: 'Courier New'
+        },
+        tertiary: {
+            family: 'Arial'
+        }
+    },
 };
 exports.themeSchema = {
     id: { type: 'string | number', attributes: { required: false } },
@@ -65,10 +92,34 @@ exports.themeSchema = {
     threecard3title: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     threecard3image: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     threecard3text: { type: 'string', attributes: { required: true, strLength: { maxLength: 2048 } } },
-    about: { type: 'string', attributes: { required: true, strLength: { maxLength: 4096 } } },
+    about: { type: 'string', attributes: { required: true, strLength: { maxLength: 8192 } } },
     card1color: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     card2color: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
     font: { type: 'string', attributes: { required: true, strLength: { minLength: 1, maxLength: 256 } } },
+    cards: {
+        type: {
+            primary: { type: 'string', attributes: { required: true } },
+            secondary: { type: 'string', attributes: { required: true } },
+            tertiary: { type: 'string', attributes: { required: true } },
+        },
+        attributes: { required: true }
+    },
+    forms: {
+        type: {
+            primary: { type: 'string', attributes: { required: true } },
+            secondary: { type: 'string', attributes: { required: true } },
+            tertiary: { type: 'string', attributes: { required: true } },
+        },
+        attributes: { required: true }
+    },
+    buttons: {
+        type: {
+            primary: { type: 'string', attributes: { required: true } },
+            secondary: { type: 'string', attributes: { required: true } },
+            tertiary: { type: 'string', attributes: { required: true } },
+        },
+        attributes: { required: true }
+    },
 };
 const models = {
     user: {
@@ -157,7 +208,41 @@ const models = {
         card1color: `TEXT`,
         card2color: `TEXT`,
         font: `TEXT`,
+        cards: `TEXT`,
+        forms: `TEXT`,
+        buttons: `TEXT`,
+        fonts: `TEXT`,
         PRIMARY: `KEY (id)`,
     }
 };
 exports.default = models;
+function deepMergeWithDefaults(defaults, overrides) {
+    if (typeof defaults !== 'object' || defaults === null) {
+        return overrides !== undefined ? overrides : defaults;
+    }
+    if (Array.isArray(defaults)) {
+        if (!Array.isArray(overrides)) {
+            return defaults;
+        }
+        const defaultItem = defaults[0]; // Use first item in default array as schema
+        return overrides.map((overrideItem) => {
+            if (typeof defaultItem === 'object' && defaultItem !== null && !Array.isArray(defaultItem)) {
+                return deepMergeWithDefaults(defaultItem, overrideItem);
+            }
+            else if (Array.isArray(defaultItem)) {
+                return deepMergeWithDefaults(defaultItem, overrideItem);
+            }
+            else {
+                return overrideItem !== undefined ? overrideItem : defaultItem;
+            }
+        });
+    }
+    // If plain object, merge all keys from defaults
+    const result = {};
+    for (const key in defaults) {
+        if (Object.prototype.hasOwnProperty.call(defaults, key)) {
+            result[key] = deepMergeWithDefaults(defaults[key], overrides === null || overrides === void 0 ? void 0 : overrides[key]);
+        }
+    }
+    return result;
+}

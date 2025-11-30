@@ -35,7 +35,7 @@ const validation2 = (() => {
             }
             if ((_d = (_c = schema[key].attributes) === null || _c === void 0 ? void 0 : _c.strLength) === null || _d === void 0 ? void 0 : _d.hasOwnProperty('maxLength')) {
                 if (input.length > schema[key].attributes.strLength.maxLength) {
-                    errors.push(key + ` exceeds minimum specified length.`);
+                    errors.push(key + `exceeds maximum specified length.`);
                 }
             }
             // number or string range tests

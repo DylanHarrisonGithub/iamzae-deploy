@@ -15,17 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("../../models/models");
 const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const deleteRes = yield db_service_1.default.row.query(`DELETE FROM theme WHERE id = (SELECT MAX(id) FROM theme);`);
-    const res = yield db_service_1.default.row.read('theme');
-    return new Promise(resolve => {
-        var _a;
-        return resolve({
-            code: 200,
-            json: {
-                success: res.success,
-                messages: res.messages,
-                body: ((_a = res.body) === null || _a === void 0 ? void 0 : _a.length) ? res.body.sort((a, b) => b.id - a.id)[0] : models_1.defaultTheme
-            }
-        });
-    });
+    // const res = await db.row.read<Theme[]>('theme');
+    const res = yield db_service_1.default.row.query('SELECT * FROM theme ORDER BY id DESC LIMIT 1;');
+    let expandedBody = models_1.defaultTheme;
+    try {
+        expandedBody = ((_a = res.body) === null || _a === void 0 ? void 0 : _a.length) ?
+            Object.keys(res.body[0]).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: JSON.parse(res.body[0][key]) })), {})
+            :
+                models_1.defaultTheme;
+    }
+    catch (e) {
+        expandedBody = models_1.defaultTheme;
+        res.messages.push('Error parsing theme data from database; using default theme.');
+    }
+    // ensure all keys are present
+    expandedBody = (0, models_1.deepMergeWithDefaults)(models_1.defaultTheme, expandedBody);
+    return new Promise(resolve => resolve({
+        code: 200,
+        json: {
+            success: res.success,
+            messages: res.messages,
+            body: expandedBody
+        }
+    }));
 });

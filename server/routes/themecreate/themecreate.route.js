@@ -17,7 +17,9 @@ const db_service_1 = __importDefault(require("../../services/db/db.service"));
 exports.default = (request) => __awaiter(void 0, void 0, void 0, function* () {
     // precaution to filter any additional params that were provided with request
     const filteredTheme = Object.fromEntries(Object.entries(request.params).filter(([key]) => key in models_1.defaultTheme));
-    const dbres = yield db_service_1.default.row.create('theme', filteredTheme);
+    // flatten nested objects if any (e.g. fonts)
+    const flattenedFilteredTheme = Object.keys(filteredTheme).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: JSON.stringify(filteredTheme[key]) })), {});
+    const dbres = yield db_service_1.default.row.create('theme', flattenedFilteredTheme);
     return new Promise(resolve => resolve({
         code: dbres.success ? 200 : 400,
         json: {
